@@ -1,52 +1,58 @@
-package com.ymovie.app.data;
+package com.ymovie.app.data
 
-import com.ymovie.app.data.model.movie.MovieList;
-import com.ymovie.app.data.source.RemoteMovieDataSource;
+import com.ymovie.app.data.model.movie.MovieList
+import com.ymovie.app.data.source.RemoteMovieDataSource
 
-public class MovieRepository {
-    private final RemoteMovieDataSource remoteMovieDataSource;
+class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) {
+    fun fetchTopRatedMovies(
+        language: String,
+        page: Int,
+        region: String,
+        responseCallback: ResponseCallback<MovieList>
+    ) {
+        remoteMovieDataSource.fetchTopRatedMovies(
+            language,
+            page,
+            region,
+            object : ResponseCallback<MovieList> {
+                override fun onSuccess(data: MovieList) {
+                    responseCallback.onSuccess(data)
+                }
 
-    public MovieRepository(RemoteMovieDataSource remoteMovieDataSource) {
-        this.remoteMovieDataSource = remoteMovieDataSource;
+                override fun onFailure(t: Throwable) {
+                    responseCallback.onFailure(t)
+                }
+            }
+        )
     }
 
-    public void fetchTopRatedMovies(String language, int page, String region, ResponseCallback<MovieList> responseCallback) {
-        remoteMovieDataSource.fetchTopRatedMovies(language, page, region, new ResponseCallback<MovieList>() {
-            @Override
-            public void onSuccess(MovieList data) {
-                responseCallback.onSuccess(data);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                responseCallback.onFailure(t);
-            }
-        });
-    }
-
-    public void searchMovie(
-            String query,
-            boolean includeAdult,
-            String language,
-            String primaryReleaseYear,
-            int page,
-            String region,
-            String year,
-            ResponseCallback<MovieList> responseCallback
+    fun searchMovie(
+        query: String,
+        includeAdult: Boolean,
+        language: String,
+        primaryReleaseYear: String,
+        page: Int,
+        region: String,
+        year: String,
+        responseCallback: ResponseCallback<MovieList>
     ) {
         remoteMovieDataSource.searchMovie(
-                query, includeAdult, language, primaryReleaseYear, page, region, year,
-                new ResponseCallback<MovieList>() {
-                    @Override
-                    public void onSuccess(MovieList data) {
-                        responseCallback.onSuccess(data);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        responseCallback.onFailure(t);
-                    }
+            query,
+            includeAdult,
+            language,
+            primaryReleaseYear,
+            page,
+            region,
+            year,
+            object : ResponseCallback<MovieList> {
+                override fun onSuccess(data: MovieList) {
+                    responseCallback.onSuccess(data)
                 }
-        );
+
+                override fun onFailure(t: Throwable) {
+                    responseCallback.onFailure(t)
+                }
+            }
+        )
     }
 }

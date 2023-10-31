@@ -1,6 +1,5 @@
-package com.ymovie.app.ui.detail;
+package com.ymovie.app.ui.detail
 
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment
 
-public class MovieDetailFragment extends Fragment {
-}
+class MovieDetailFragment : Fragment()

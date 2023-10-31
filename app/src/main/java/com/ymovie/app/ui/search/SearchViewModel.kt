@@ -1,68 +1,53 @@
-package com.ymovie.app.ui.search;
+package com.ymovie.app.ui.search
 
-import com.ymovie.app.data.MovieRepository;
-import com.ymovie.app.data.ResponseCallback;
-import com.ymovie.app.data.model.movie.MovieList;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.ymovie.app.data.MovieRepository
+import com.ymovie.app.data.ResponseCallback
+import com.ymovie.app.data.model.movie.MovieList
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel() {
+    private var _searchResultLiveData: MutableLiveData<MovieList> = MutableLiveData()
+    val searchResultLiveData: LiveData<MovieList> get() = _searchResultLiveData
 
-public class SearchViewModel extends ViewModel {
-    private MutableLiveData<MovieList> searchResultLiveData;
-    private final MovieRepository movieRepository;
-
-    public SearchViewModel(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
-
-    public MutableLiveData<MovieList> getSearchResultLiveData() {
-        searchResultLiveData = new MutableLiveData<>();
-
-        return searchResultLiveData;
-    }
-
-    public void searchMovie(
-            String query,
-            boolean includeAdult,
-            String language,
-            String primaryReleaseYear,
-            int page,
-            String region,
-            String year
+    fun searchMovie(
+        query: String,
+        includeAdult: Boolean,
+        language: String,
+        primaryReleaseYear: String,
+        page: Int,
+        region: String,
+        year: String
     ) {
         movieRepository.searchMovie(
-                query, includeAdult, language, primaryReleaseYear, page, region, year,
-                new ResponseCallback<MovieList>() {
-                    @Override
-                    public void onSuccess(MovieList data) {
-                        searchResultLiveData.setValue(data);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        searchResultLiveData.setValue(null);
-                    }
+            query,
+            includeAdult,
+            language,
+            primaryReleaseYear,
+            page,
+            region,
+            year,
+            object : ResponseCallback<MovieList> {
+                override fun onSuccess(data: MovieList) {
+                    _searchResultLiveData.value = data
                 }
-        );
+
+                override fun onFailure(t: Throwable) {
+                    _searchResultLiveData.value = null
+                }
+            }
+        )
     }
 }
 
-class SearchViewModelFactory implements ViewModelProvider.Factory {
-    private final MovieRepository movieRepository;
-
-    public SearchViewModelFactory(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
-
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(SearchViewModel.class)) {
-            return (T) new SearchViewModel(movieRepository);
+class SearchViewModelFactory(private val movieRepository: MovieRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
+            return SearchViewModel(movieRepository) as T
         }
 
-        throw new IllegalArgumentException("Unknown ViewModel class");
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

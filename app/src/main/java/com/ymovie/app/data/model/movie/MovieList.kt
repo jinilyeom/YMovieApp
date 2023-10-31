@@ -1,53 +1,19 @@
-package com.ymovie.app.data.model.movie;
+package com.ymovie.app.data.model.movie
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-import java.util.List;
-
-public class MovieList {
+data class MovieList(
     @SerializedName("page")
     @Expose
-    private int page;
+    var page: Int,
     @SerializedName("results")
     @Expose
-    private List<Movie> movies;
+    var movies: List<Movie>?,
     @SerializedName("total_pages")
     @Expose
-    private int totalPage;
+    var totalPage: Int,
     @SerializedName("total_results")
     @Expose
-    private int totalResult;
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public List<Movie> getMovies() {
-        return movies;
-    }
-
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
-    }
-
-    public int getTotalPage() {
-        return totalPage;
-    }
-
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-    }
-
-    public int getTotalResult() {
-        return totalResult;
-    }
-
-    public void setTotalResult(int totalResult) {
-        this.totalResult = totalResult;
-    }
-}
+    var totalResult: Int
+)

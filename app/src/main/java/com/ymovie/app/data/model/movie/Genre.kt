@@ -1,29 +1,13 @@
-package com.ymovie.app.data.model.movie;
+package com.ymovie.app.data.model.movie
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-public class Genre {
+data class Genre(
     @SerializedName("id")
     @Expose
-    private int id;
+    var id: Int,
     @SerializedName("name")
     @Expose
-    private String name;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}
+    var name: String
+)

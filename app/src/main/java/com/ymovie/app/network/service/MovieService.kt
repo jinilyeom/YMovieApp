@@ -1,27 +1,26 @@
-package com.ymovie.app.network.service;
+package com.ymovie.app.network.service
 
-import com.ymovie.app.data.model.movie.MovieList;
+import com.ymovie.app.data.model.movie.MovieList
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-public interface MovieService {
+interface MovieService {
     @GET("movie/top_rated")
-    Call<MovieList> fetchTopRatedMovies(
-            @Query("language") String language,
-            @Query("page") int page,
-            @Query("region") String region
-    );
+    fun fetchTopRatedMovies(
+        @Query("language") language: String,
+        @Query("page") page: Int,
+        @Query("region") region: String
+    ): Call<MovieList>
 
     @GET("search/movie")
-    Call<MovieList> searchMovie(
-            @Query("query") String query,
-            @Query("include_adult") boolean includeAdult,
-            @Query("language") String language,
-            @Query("primary_release_year") String primaryReleaseYear,
-            @Query("page") int page,
-            @Query("region") String region,
-            @Query("year") String year
-    );
+    fun searchMovie(
+        @Query("query") query: String,
+        @Query("include_adult") includeAdult: Boolean,
+        @Query("language") language: String,
+        @Query("primary_release_year") primaryReleaseYear: String,
+        @Query("page") page: Int,
+        @Query("region") region: String,
+        @Query("year") year: String
+    ): Call<MovieList>
 }

@@ -1,111 +1,98 @@
-package com.ymovie.app.ui.search;
+package com.ymovie.app.ui.search
 
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.ymovie.app.data.MovieRepository
+import com.ymovie.app.data.source.RemoteMovieDataSource
+import com.ymovie.app.databinding.FragmentSearchBinding
+import com.ymovie.app.network.RetrofitApiClient
+import com.ymovie.app.network.service.MovieService
 
-import com.ymovie.app.data.MovieRepository;
-import com.ymovie.app.data.model.movie.MovieList;
-import com.ymovie.app.data.source.RemoteMovieDataSource;
-import com.ymovie.app.databinding.FragmentSearchBinding;
-import com.ymovie.app.network.RetrofitApiClient;
-import com.ymovie.app.network.service.MovieService;
+class SearchFragment : Fragment() {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
+    private lateinit var searchViewModel: SearchViewModel
+    private lateinit var searchAdapter: SearchAdapter
+    private lateinit var searchLinearLayoutManager: LinearLayoutManager
 
-public class SearchFragment extends Fragment {
-    private static final boolean DEFAULT_INCLUDE_ADULT = true;
-    private static final String DEFAULT_LANGUAGE = "en-US";
-    private static final String DEFAULT_PRIMARY_RELEASE_YEAR = "";
-    private static final int DEFAULT_PAGE = 1;
-    private static final String DEFAULT_REGION = "";
-    private static final String DEFAULT_YEAR = "";
+    companion object {
+        private const val DEFAULT_INCLUDE_ADULT = true
+        private const val DEFAULT_LANGUAGE = "en-US"
+        private const val DEFAULT_PRIMARY_RELEASE_YEAR = ""
+        private const val DEFAULT_PAGE = 1
+        private const val DEFAULT_REGION = ""
+        private const val DEFAULT_YEAR = ""
 
-    private FragmentSearchBinding binding;
-    private SearchViewModel searchViewModel;
-
-    private SearchAdapter searchAdapter;
-    private LinearLayoutManager searchLinearLayoutManager;
-
-    public static SearchFragment newInstance() {
-        return new SearchFragment();
+        fun newInstance(): SearchFragment {
+            return SearchFragment()
+        }
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentSearchBinding.inflate(inflater, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        return binding.getRoot();
+        return binding.root
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        MovieRepository repository = new MovieRepository(
-                new RemoteMovieDataSource(RetrofitApiClient.getRetrofitInstance().create(MovieService.class))
-        );
-        searchViewModel = new ViewModelProvider(requireActivity(), new SearchViewModelFactory(repository))
-                .get(SearchViewModel.class);
+        val repository = MovieRepository(
+            RemoteMovieDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+        )
+        searchViewModel = ViewModelProvider(this@SearchFragment, SearchViewModelFactory(repository))[SearchViewModel::class.java]
 
-        initAdapter();
-        subscribeUi();
+        initAdapter()
+        subscribeUi()
 
-        binding.searchView.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        binding.searchView.apply {
+            this.setupWithSearchBar(binding.searchBar)
+            this.editText.setOnEditorActionListener { v, actionId, event ->
                 searchViewModel.searchMovie(
-                        String.valueOf(binding.searchView.getText()),
-                        DEFAULT_INCLUDE_ADULT,
-                        DEFAULT_LANGUAGE,
-                        DEFAULT_PRIMARY_RELEASE_YEAR,
-                        DEFAULT_PAGE,
-                        DEFAULT_REGION,
-                        DEFAULT_YEAR
-                );
+                    binding.searchView.text.toString(),
+                    DEFAULT_INCLUDE_ADULT,
+                    DEFAULT_LANGUAGE,
+                    DEFAULT_PRIMARY_RELEASE_YEAR,
+                    DEFAULT_PAGE,
+                    DEFAULT_REGION,
+                    DEFAULT_YEAR
+                )
 
-                binding.searchBar.setText(binding.searchView.getText());
-                binding.searchView.hide();
+                binding.searchBar.text = binding.searchView.text
+                binding.searchView.hide()
 
-                return false;
+                false
             }
-        });
+        }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-        binding = null;
+        _binding = null
     }
 
-    private void initAdapter() {
-        searchAdapter = new SearchAdapter(requireActivity());
-        searchLinearLayoutManager = new LinearLayoutManager(requireActivity());
-        searchLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+    private fun initAdapter() {
+        searchAdapter = SearchAdapter(requireActivity(), ArrayList())
+        searchLinearLayoutManager = LinearLayoutManager(requireActivity()).apply {
+            this.orientation = LinearLayoutManager.VERTICAL
+        }
 
-        binding.rvSearchResult.setLayoutManager(searchLinearLayoutManager);
-        binding.rvSearchResult.setAdapter(searchAdapter);
+        binding.rvSearchResult.apply {
+            this.layoutManager = searchLinearLayoutManager
+            this.adapter = searchAdapter
+        }
     }
 
-    private void subscribeUi() {
-        searchViewModel.getSearchResultLiveData().observe(getViewLifecycleOwner(), new Observer<MovieList>() {
-            @Override
-            public void onChanged(MovieList model) {
-                if (model == null) {
-                    return;
-                }
-
-                searchAdapter.setItemToList(model.getMovies());
-            }
-        });
+    private fun subscribeUi() {
+        searchViewModel.searchResultLiveData.observe(viewLifecycleOwner) { model ->
+            searchAdapter.setItemToList(model.movies ?: ArrayList())
+        }
     }
 }

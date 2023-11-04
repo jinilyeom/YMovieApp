@@ -92,7 +92,9 @@ class SearchFragment : Fragment() {
 
     private fun subscribeUi() {
         searchViewModel.searchResultLiveData.observe(viewLifecycleOwner) { model ->
-            searchAdapter.setItemToList(model.movies ?: ArrayList())
+            searchAdapter.setItemToList(
+                model?.let { it.movies ?: emptyList() } ?: emptyList()
+            )
         }
     }
 }

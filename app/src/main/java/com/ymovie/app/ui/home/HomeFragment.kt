@@ -95,7 +95,9 @@ class HomeFragment : Fragment() {
 
     private fun subscribeUi() {
         homeViewModel.movieLiveData.observe(viewLifecycleOwner) { model ->
-            homeAdapter.addItemToList(model.movies ?: ArrayList())
+            homeAdapter.addItemToList(
+                model?.let { it.movies ?: emptyList() } ?: emptyList()
+            )
         }
     }
 }

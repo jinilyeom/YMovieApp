@@ -5,12 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.ResponseCallback
+import com.ymovie.app.data.NetworkResponse
 import com.ymovie.app.data.model.movie.MovieList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel() {
     private var _searchResultLiveData: MutableLiveData<MovieList> = MutableLiveData()
     val searchResultLiveData: LiveData<MovieList> get() = _searchResultLiveData
+
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun searchMovie(
         query: String,
@@ -21,24 +28,27 @@ class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel(
         region: String,
         year: String
     ) {
-        movieRepository.searchMovie(
-            query,
-            includeAdult,
-            language,
-            primaryReleaseYear,
-            page,
-            region,
-            year,
-            object : ResponseCallback<MovieList> {
-                override fun onSuccess(data: MovieList) {
-                    _searchResultLiveData.value = data
+        scope.launch {
+            val networkResponse = movieRepository.searchMovie(
+                query, includeAdult, language, primaryReleaseYear, page, region, year
+            )
+
+            when (networkResponse) {
+                is NetworkResponse.Success -> {
+                    _searchResultLiveData.value = networkResponse.data
                 }
 
-                override fun onFailure(t: Throwable) {
+                is NetworkResponse.Failure -> {
                     _searchResultLiveData.value = null
                 }
             }
-        )
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        scope.cancel()
     }
 }
 

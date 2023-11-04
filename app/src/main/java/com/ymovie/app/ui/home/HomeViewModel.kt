@@ -5,28 +5,40 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.ResponseCallback
+import com.ymovie.app.data.NetworkResponse
 import com.ymovie.app.data.model.movie.MovieList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
     private var _movieLiveData: MutableLiveData<MovieList> = MutableLiveData()
     val movieLiveData: LiveData<MovieList> get() = _movieLiveData
 
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     fun fetchTopRatedMovies(language: String, page: Int, region: String) {
-        movieRepository.fetchTopRatedMovies(
-            language,
-            page,
-            region,
-            object : ResponseCallback<MovieList> {
-                override fun onSuccess(data: MovieList) {
-                    _movieLiveData.value = data
+        scope.launch {
+            val networkResponse = movieRepository.fetchTopRatedMovies(language, page, region)
+
+            when (networkResponse) {
+                is NetworkResponse.Success -> {
+                    _movieLiveData.value = networkResponse.data
                 }
 
-                override fun onFailure(t: Throwable) {
+                is NetworkResponse.Failure -> {
                     _movieLiveData.value = null
                 }
             }
-        )
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        scope.cancel()
     }
 }
 

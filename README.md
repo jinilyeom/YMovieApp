@@ -26,9 +26,6 @@ TMDB_ACCESS_TOKEN_AUTH = "Your API key"
 
 ## Do next
 Will be development with:
-- [Kotlin][0]
-- [Kotlin Coroutines][0]
-- Jetpack Compose
-
-<!-- Path -->
-[0]: https://github.com/jinilyeom/YMovieApp/tree/convert-to-kotlin
+- [x] Kotlin
+- [x] Kotlin Coroutines
+- [ ] Jetpack Compose

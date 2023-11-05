@@ -1,19 +1,34 @@
-# YMovieApp
-This is an android movie app built entirely with Java.
+# YMovie
+This is an simple movie app for android.
 Trying to understand android architecture basic.
 I started project with Java, but I am gonna convert to Kotlin and Jetpack Compose later.
 I hope someones helpful this project.
 
 ## Architecture
-YMovieApp references the [official architecture guidance](https://developer.android.com/topic/architecture).
-It’s so hard to understand because I referenced every single project is different.
+YMovie references the [official architecture guidance](https://developer.android.com/topic/architecture).
 
 ## TMDB
-You need to TMDB API keys.
+YMovie uses TMDB API. To use API you need to TMDB API keys.
 - [TMDB](https://developer.themoviedb.org/docs)
+
+Once you get the key, you can set in `NetworkConstants.kt`:
+```
+TMDB_ACCESS_TOKEN_AUTH = "Your API key"
+```
+
+## Libraries Used
+* Android Architecture Components
+    * LiveData
+    * ViewModel
+* Retrofit
+* Gson
+* Glide
 
 ## Do next
 Will be development with:
-- Kotlin
-- Kotlin Coroutines
+- [Kotlin][0]
+- [Kotlin Coroutines][0]
 - Jetpack Compose
+
+<!-- Path -->
+[0]: https://github.com/jinilyeom/YMovieApp/tree/convert-to-kotlin

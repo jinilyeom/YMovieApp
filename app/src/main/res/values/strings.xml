@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YMovieApp</string>
+    <string name="app_name">YMovie</string>
     <string name="label_navigation_home">Home</string>
     <string name="label_navigation_search">Search</string>
     <string name="label_user_score">User Score: %1$f</string>

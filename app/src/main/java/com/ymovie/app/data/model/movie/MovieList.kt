@@ -15,5 +15,6 @@ data class MovieList(
     var totalPage: Int,
     @SerializedName("total_results")
     @Expose
-    var totalResult: Int
+    var totalResult: Int,
+    var header: String
 )

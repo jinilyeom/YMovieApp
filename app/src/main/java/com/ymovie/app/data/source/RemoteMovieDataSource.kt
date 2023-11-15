@@ -4,8 +4,20 @@ import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.network.service.MovieService
 
 class RemoteMovieDataSource(private val service: MovieService) {
+    suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): MovieList {
+        return service.fetchNowPlayingMovies(language, page, region)
+    }
+
+    suspend fun fetchPopularMovies(language: String, page: Int, region: String): MovieList {
+        return service.fetchPopularMovies(language, page, region)
+    }
+
     suspend fun fetchTopRatedMovies(language: String, page: Int, region: String): MovieList {
         return service.fetchTopRatedMovies(language, page, region)
+    }
+
+    suspend fun fetchUpcomingMovies(language: String, page: Int, region: String): MovieList {
+        return service.fetchUpcomingMovies(language, page, region)
     }
 
     suspend fun searchMovie(

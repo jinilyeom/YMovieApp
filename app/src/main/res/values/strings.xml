@@ -3,6 +3,6 @@
     <string name="label_navigation_home">Home</string>
     <string name="label_navigation_search">Search</string>
     <string name="label_user_score">User Score: %1$f</string>
-    <string name="label_page_title_home">Home</string>
+    <string name="label_number_with_percent">%1$d\%%</string>
     <string name="hint_search">Enter text to search</string>
 </resources>

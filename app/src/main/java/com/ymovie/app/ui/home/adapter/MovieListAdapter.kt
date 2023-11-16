@@ -1,4 +1,4 @@
-package com.ymovie.app.ui.home
+package com.ymovie.app.ui.home.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.databinding.ItemMovieTypeDefaultBinding
+import com.ymovie.app.ui.home.viewholder.MovieListViewHolder
 
 class MovieListAdapter(
     private val context: Context,

@@ -1,4 +1,4 @@
-package com.ymovie.app.ui.home
+package com.ymovie.app.ui.home.viewholder
 
 import android.content.Context
 import android.graphics.Rect
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.databinding.ItemHomeTypeDefaultBinding
+import com.ymovie.app.ui.home.adapter.MovieListAdapter
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
 

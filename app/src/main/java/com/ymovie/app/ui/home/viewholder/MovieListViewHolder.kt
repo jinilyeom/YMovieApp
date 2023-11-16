@@ -1,4 +1,4 @@
-package com.ymovie.app.ui.home
+package com.ymovie.app.ui.home.viewholder
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView

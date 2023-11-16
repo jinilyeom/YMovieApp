@@ -13,6 +13,7 @@ import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.databinding.FragmentHomeBinding
 import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
+import com.ymovie.app.ui.home.adapter.HomeAdapter
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
 
@@ -52,7 +53,7 @@ class HomeFragment : Fragment() {
         initAdapter()
         subscribeUi()
 
-        homeViewModel.fetchPopularMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
+        homeViewModel.fetchNowPlayingMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
     }
 
     override fun onDestroyView() {
@@ -78,19 +79,29 @@ class HomeFragment : Fragment() {
     }
 
     private fun subscribeUi() {
+        homeViewModel.nowPlayingLiveData.observe(viewLifecycleOwner) { model ->
+            model.viewType = 0
+            homeAdapter.addItemToList(model)
+
+            homeViewModel.fetchPopularMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
+        }
+
         homeViewModel.popularLiveData.observe(viewLifecycleOwner) { model ->
+            model.viewType = 1
             homeAdapter.addItemToList(model)
 
             homeViewModel.fetchTopRatedMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
         }
 
         homeViewModel.topRatedLiveData.observe(viewLifecycleOwner) { model ->
+            model.viewType = 1
             homeAdapter.addItemToList(model)
 
             homeViewModel.fetchUpcomingMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
         }
 
         homeViewModel.upcomingLiveData.observe(viewLifecycleOwner) { model ->
+            model.viewType = 1
             homeAdapter.addItemToList(model)
         }
     }

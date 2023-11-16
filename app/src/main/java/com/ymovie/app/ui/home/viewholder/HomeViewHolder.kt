@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.databinding.ItemHomeTypeDefaultBinding
-import com.ymovie.app.ui.home.adapter.MovieListAdapter
+import com.ymovie.app.ui.home.adapter.HomeMovieListAdapter
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
 
@@ -27,7 +27,7 @@ class HomeViewHolder(
 
         binding.rvMovies.apply {
             this.layoutManager = linearLayoutManager
-            this.adapter = MovieListAdapter(context, list.movies as MutableList<Movie>)
+            this.adapter = HomeMovieListAdapter(context, list.movies as MutableList<Movie>)
             this.addItemDecoration(RecyclerViewItemOffset(rect))
         }
     }

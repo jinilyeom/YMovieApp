@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ymovie.app.R
 import com.ymovie.app.data.model.movie.Movie
-import com.ymovie.app.databinding.ItemMovieTypeDefaultBinding
+import com.ymovie.app.databinding.ItemHomeMovieListBinding
 import com.ymovie.app.network.NetworkConstants
 
-class MovieListViewHolder(
-    private val binding: ItemMovieTypeDefaultBinding
+class HomeMovieListViewHolder(
+    private val binding: ItemHomeMovieListBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(context: Context, movie: Movie) {

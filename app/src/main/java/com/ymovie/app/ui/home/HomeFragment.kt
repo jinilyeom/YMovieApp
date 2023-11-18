@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
         initAdapter()
         subscribeUi()
 
-        homeViewModel.fetchNowPlayingMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
+        homeViewModel.fetchHomeData(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
     }
 
     override fun onDestroyView() {
@@ -79,30 +79,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        homeViewModel.nowPlayingLiveData.observe(viewLifecycleOwner) { model ->
-            model.viewType = 0
-            homeAdapter.addItemToList(model)
-
-            homeViewModel.fetchPopularMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
-        }
-
-        homeViewModel.popularLiveData.observe(viewLifecycleOwner) { model ->
-            model.viewType = 1
-            homeAdapter.addItemToList(model)
-
-            homeViewModel.fetchTopRatedMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
-        }
-
-        homeViewModel.topRatedLiveData.observe(viewLifecycleOwner) { model ->
-            model.viewType = 1
-            homeAdapter.addItemToList(model)
-
-            homeViewModel.fetchUpcomingMovies(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
-        }
-
-        homeViewModel.upcomingLiveData.observe(viewLifecycleOwner) { model ->
-            model.viewType = 1
-            homeAdapter.addItemToList(model)
+        homeViewModel.homeDataLiveData.observe(viewLifecycleOwner) { responseData ->
+            responseData.forEach { movies ->
+                homeAdapter.addItemToList(movies)
+            }
         }
     }
 }

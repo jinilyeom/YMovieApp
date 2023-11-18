@@ -10,83 +10,59 @@ import com.ymovie.app.data.model.movie.MovieList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var _nowPlayingLiveData: MutableLiveData<MovieList> = MutableLiveData()
-    val nowPlayingLiveData: LiveData<MovieList> get() = _nowPlayingLiveData
-    private var _popularLiveData: MutableLiveData<MovieList> = MutableLiveData()
-    val popularLiveData: LiveData<MovieList> get() = _popularLiveData
-    private var _topRatedLiveData: MutableLiveData<MovieList> = MutableLiveData()
-    val topRatedLiveData: LiveData<MovieList> get() = _topRatedLiveData
-    private var _upcomingLiveData: MutableLiveData<MovieList> = MutableLiveData()
-    val upcomingLiveData: LiveData<MovieList> get() = _upcomingLiveData
+    private var _homeDataLiveData: MutableLiveData<ArrayList<MovieList>> = MutableLiveData()
+    val homeDataLiveData: LiveData<ArrayList<MovieList>> get() = _homeDataLiveData
 
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-    fun fetchNowPlayingMovies(language: String, page: Int, region: String) {
+    fun fetchHomeData(language: String, page: Int, region: String) {
         scope.launch {
-            val networkResponse = movieRepository.fetchNowPlayingMovies(language, page, region)
-
-            when (networkResponse) {
-                is NetworkResponse.Success -> {
-                    _nowPlayingLiveData.value = networkResponse.data
-                }
-
-                is NetworkResponse.Failure -> {
-                    _nowPlayingLiveData.value = null
-                }
+            val job1 = async {
+                responseResult(movieRepository.fetchNowPlayingMovies(language, page, region), "", 0)
             }
+
+            val job2 = async {
+                responseResult(movieRepository.fetchPopularMovies(language, page, region), "Popular", 1)
+            }
+
+            val job3 = async {
+                responseResult(movieRepository.fetchTopRatedMovies(language, page, region), "Top Rated", 1)
+            }
+
+            val job4 = async {
+                responseResult(movieRepository.fetchUpcomingMovies(language, page, region), "Upcoming", 1)
+            }
+
+            job1.join()
+            job2.join()
+            job3.join()
+            job4.join()
+
+            _homeDataLiveData.value = arrayListOf(job1.await(), job2.await(), job3.await(), job4.await())
         }
     }
 
-    fun fetchPopularMovies(language: String, page: Int, region: String) {
-        scope.launch {
-            val networkResponse = movieRepository.fetchPopularMovies(language, page, region)
-
-            when (networkResponse) {
+    private suspend fun responseResult(
+        data: NetworkResponse<MovieList>,
+        header: String,
+        viewType: Int
+    ): MovieList {
+        return data.let { response ->
+            when (response) {
                 is NetworkResponse.Success -> {
-                    networkResponse.data.header = "Popular"
-                    _popularLiveData.value = networkResponse.data
+                    response.data.apply {
+                        this.header = header
+                        this.viewType = viewType
+                    }
                 }
 
                 is NetworkResponse.Failure -> {
-                    _popularLiveData.value = null
-                }
-            }
-        }
-    }
-
-    fun fetchTopRatedMovies(language: String, page: Int, region: String) {
-        scope.launch {
-            val networkResponse = movieRepository.fetchTopRatedMovies(language, page, region)
-
-            when (networkResponse) {
-                is NetworkResponse.Success -> {
-                    networkResponse.data.header = "Top Rated"
-                    _topRatedLiveData.value = networkResponse.data
-                }
-
-                is NetworkResponse.Failure -> {
-                    _topRatedLiveData.value = null
-                }
-            }
-        }
-    }
-
-    fun fetchUpcomingMovies(language: String, page: Int, region: String) {
-        scope.launch {
-            val networkResponse = movieRepository.fetchUpcomingMovies(language, page, region)
-
-            when (networkResponse) {
-                is NetworkResponse.Success -> {
-                    networkResponse.data.header = "Upcoming"
-                    _upcomingLiveData.value = networkResponse.data
-                }
-
-                is NetworkResponse.Failure -> {
-                    _upcomingLiveData.value = null
+                    MovieList(1, emptyList(), 1, 1, "", 1)
                 }
             }
         }

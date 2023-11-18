@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.databinding.ItemHomeType1Binding
 import com.ymovie.app.databinding.ItemHomeTypeDefaultBinding
+import com.ymovie.app.ui.home.HomeViewType
 import com.ymovie.app.ui.home.viewholder.HomePagerViewHolder
 import com.ymovie.app.ui.home.viewholder.HomeViewHolder
 
@@ -18,7 +19,7 @@ class HomeAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            0 -> {
+            HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal -> {
                 HomePagerViewHolder(
                     ItemHomeType1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
@@ -34,7 +35,7 @@ class HomeAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (homeData[position].viewType) {
-            0 -> {
+            HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal -> {
                 (holder as HomePagerViewHolder).bind(context, homeData[position])
             }
 

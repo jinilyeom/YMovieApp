@@ -23,19 +23,35 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
     fun fetchHomeData(language: String, page: Int, region: String) {
         scope.launch {
             val job1 = async {
-                responseResult(movieRepository.fetchNowPlayingMovies(language, page, region), "", 0)
+                responseResult(
+                    movieRepository.fetchNowPlayingMovies(language, page, region),
+                    "",
+                    HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal
+                )
             }
 
             val job2 = async {
-                responseResult(movieRepository.fetchPopularMovies(language, page, region), "Popular", 1)
+                responseResult(
+                    movieRepository.fetchPopularMovies(language, page, region),
+                    "Popular",
+                    HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
+                )
             }
 
             val job3 = async {
-                responseResult(movieRepository.fetchTopRatedMovies(language, page, region), "Top Rated", 1)
+                responseResult(
+                    movieRepository.fetchTopRatedMovies(language, page, region),
+                    "Top Rated",
+                    HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
+                )
             }
 
             val job4 = async {
-                responseResult(movieRepository.fetchUpcomingMovies(language, page, region), "Upcoming", 1)
+                responseResult(
+                    movieRepository.fetchUpcomingMovies(language, page, region),
+                    "Upcoming",
+                    HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
+                )
             }
 
             job1.join()

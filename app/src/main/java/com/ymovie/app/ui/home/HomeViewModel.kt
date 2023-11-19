@@ -84,6 +84,10 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         }
     }
 
+    fun clearHomeDataLiveData() {
+        _homeDataLiveData.value = null
+    }
+
     override fun onCleared() {
         super.onCleared()
 

@@ -59,6 +59,7 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
+        homeViewModel.clearHomeDataLiveData()
         _binding = null
     }
 
@@ -80,8 +81,10 @@ class HomeFragment : Fragment() {
 
     private fun subscribeUi() {
         homeViewModel.homeDataLiveData.observe(viewLifecycleOwner) { responseData ->
-            responseData.forEach { movies ->
-                homeAdapter.addItemToList(movies)
+            responseData?.let {
+                it.forEach { movies ->
+                    homeAdapter.addItemToList(movies)
+                }
             }
         }
     }

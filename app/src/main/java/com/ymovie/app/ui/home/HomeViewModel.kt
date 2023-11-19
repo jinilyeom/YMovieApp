@@ -69,7 +69,7 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
                 }
 
                 is NetworkResponse.Failure -> {
-                    MovieList(1, emptyList(), 1, 1, "", 1)
+                    MovieList()
                 }
             }
         }

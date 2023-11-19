@@ -58,11 +58,7 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         }
     }
 
-    private suspend fun responseResult(
-        data: NetworkResponse<MovieList>,
-        header: String,
-        viewType: Int
-    ): MovieList {
+    private fun responseResult(data: NetworkResponse<MovieList>, header: String, viewType: Int): MovieList {
         return data.let { response ->
             when (response) {
                 is NetworkResponse.Success -> {

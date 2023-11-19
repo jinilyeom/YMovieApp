@@ -54,11 +54,6 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
                 )
             }
 
-            job1.join()
-            job2.join()
-            job3.join()
-            job4.join()
-
             _homeDataLiveData.value = arrayListOf(job1.await(), job2.await(), job3.await(), job4.await())
         }
     }

@@ -23,35 +23,23 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
     fun fetchHomeData(language: String, page: Int, region: String) {
         scope.launch {
             val job1 = async {
-                responseResult(
-                    movieRepository.fetchNowPlayingMovies(language, page, region),
-                    "",
-                    HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal
-                )
+                val networkResponse = movieRepository.fetchNowPlayingMovies(language, page, region)
+                responseResult(networkResponse, "", HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal)
             }
 
             val job2 = async {
-                responseResult(
-                    movieRepository.fetchPopularMovies(language, page, region),
-                    "Popular",
-                    HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
-                )
+                val networkResponse = movieRepository.fetchPopularMovies(language, page, region)
+                responseResult(networkResponse, "Popular", HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal)
             }
 
             val job3 = async {
-                responseResult(
-                    movieRepository.fetchTopRatedMovies(language, page, region),
-                    "Top Rated",
-                    HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
-                )
+                val networkResponse = movieRepository.fetchTopRatedMovies(language, page, region)
+                responseResult(networkResponse, "Top Rated", HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal)
             }
 
             val job4 = async {
-                responseResult(
-                    movieRepository.fetchUpcomingMovies(language, page, region),
-                    "Upcoming",
-                    HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
-                )
+                val networkResponse = movieRepository.fetchUpcomingMovies(language, page, region)
+                responseResult(networkResponse, "Upcoming", HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal)
             }
 
             _homeDataLiveData.value = arrayListOf(job1.await(), job2.await(), job3.await(), job4.await())

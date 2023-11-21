@@ -2,4 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="yellow_100">#D2D531</color>
+    <color name="yellow_200">#423D0F</color>
+    <color name="green_100">#21D07A</color>
+    <color name="green_200">#204529</color>
+    <color name="blue_100">#081C22</color>
+
+    <color name="user_score_background">@color/blue_100</color>
+    <color name="user_score_track">@color/green_200</color>
+    <color name="user_score_track_under_70">@color/yellow_200</color>
+    <color name="user_score_indicator">@color/green_100</color>
+    <color name="user_score_indicator_under_70">@color/yellow_100</color>
 </resources>

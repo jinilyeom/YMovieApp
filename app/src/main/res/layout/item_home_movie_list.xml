@@ -20,11 +20,21 @@
             android:minHeight="250dp"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.ymovie.app.ui.view.CircularProgress
+            android:id="@+id/pb_vote_average"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintBottom_toTopOf="@id/layout_movie_information"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_movie_information"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:paddingBottom="10dp"
+            android:paddingVertical="10dp"
             app:layout_constraintTop_toBottomOf="@id/imv_poster">
 
             <TextView
@@ -47,15 +57,6 @@
                 app:layout_constraintStart_toStartOf="@id/tv_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_title"
                 tools:text="0000-00-00" />
-
-            <TextView
-                android:id="@+id/tv_vote_average"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@id/tv_release_date"
-                app:layout_constraintTop_toBottomOf="@id/tv_release_date"
-                tools:text="100%" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

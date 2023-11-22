@@ -10,12 +10,13 @@ import com.ymovie.app.data.model.movie.MovieList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var _searchResultLiveData: MutableLiveData<MovieList> = MutableLiveData()
-    val searchResultLiveData: LiveData<MovieList> get() = _searchResultLiveData
+    private var _searchResultLiveData: MutableLiveData<NetworkResponse<MovieList>> = MutableLiveData()
+    val searchResultLiveData: LiveData<NetworkResponse<MovieList>> get() = _searchResultLiveData
 
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
@@ -29,19 +30,13 @@ class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel(
         year: String
     ) {
         scope.launch {
-            val networkResponse = movieRepository.searchMovie(
-                query, includeAdult, language, primaryReleaseYear, page, region, year
-            )
-
-            when (networkResponse) {
-                is NetworkResponse.Success -> {
-                    _searchResultLiveData.value = networkResponse.data
-                }
-
-                is NetworkResponse.Failure -> {
-                    _searchResultLiveData.value = null
-                }
+            val job = async {
+                movieRepository.searchMovie(
+                    query, includeAdult, language, primaryReleaseYear, page, region, year
+                )
             }
+
+            _searchResultLiveData.value = job.await()
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ymovie.app.data.MovieRepository
+import com.ymovie.app.data.NetworkResponse
 import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.databinding.FragmentSearchBinding
 import com.ymovie.app.network.RetrofitApiClient
@@ -23,19 +24,6 @@ class SearchFragment : Fragment() {
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var searchLinearLayoutManager: LinearLayoutManager
-
-    companion object {
-        private const val DEFAULT_INCLUDE_ADULT = true
-        private const val DEFAULT_LANGUAGE = "en-US"
-        private const val DEFAULT_PRIMARY_RELEASE_YEAR = ""
-        private const val DEFAULT_PAGE = 1
-        private const val DEFAULT_REGION = ""
-        private const val DEFAULT_YEAR = ""
-
-        fun newInstance(): SearchFragment {
-            return SearchFragment()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -52,11 +40,36 @@ class SearchFragment : Fragment() {
         searchViewModel = ViewModelProvider(this@SearchFragment, SearchViewModelFactory(repository))[SearchViewModel::class.java]
 
         initAdapter()
+        initSearchView()
         subscribeUi()
+    }
 
-        binding.searchView.apply {
-            this.setupWithSearchBar(binding.searchBar)
-            this.editText.setOnEditorActionListener { v, actionId, event ->
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
+    }
+
+    private fun initAdapter() {
+        val bottomPx = convertDpToPx(20F, resources)
+        val rect = Rect(0, 0, 0, bottomPx)
+
+        searchAdapter = SearchAdapter(requireActivity(), ArrayList())
+        searchLinearLayoutManager = LinearLayoutManager(requireActivity()).apply {
+            this.orientation = LinearLayoutManager.VERTICAL
+        }
+
+        binding.rvSearchResult.let {
+            it.layoutManager = searchLinearLayoutManager
+            it.adapter = searchAdapter
+            it.addItemDecoration(RecyclerViewItemOffset(rect))
+        }
+    }
+
+    private fun initSearchView() {
+        binding.searchView.let {
+            it.setupWithSearchBar(binding.searchBar)
+            it.editText.setOnEditorActionListener { v, actionId, event ->
                 searchViewModel.searchMovie(
                     binding.searchView.text.toString(),
                     DEFAULT_INCLUDE_ADULT,
@@ -75,33 +88,32 @@ class SearchFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
-    }
-
-    private fun initAdapter() {
-        val bottomPx = convertDpToPx(20F, resources)
-        val rect = Rect(0, 0, 0, bottomPx)
-
-        searchAdapter = SearchAdapter(requireActivity(), ArrayList())
-        searchLinearLayoutManager = LinearLayoutManager(requireActivity()).apply {
-            this.orientation = LinearLayoutManager.VERTICAL
-        }
-
-        binding.rvSearchResult.apply {
-            this.layoutManager = searchLinearLayoutManager
-            this.adapter = searchAdapter
-            this.addItemDecoration(RecyclerViewItemOffset(rect))
-        }
-    }
-
     private fun subscribeUi() {
-        searchViewModel.searchResultLiveData.observe(viewLifecycleOwner) { model ->
-            searchAdapter.setItemToList(
-                model?.let { it.movies ?: emptyList() } ?: emptyList()
-            )
+        searchViewModel.searchResultLiveData.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is NetworkResponse.Success -> {
+                    searchAdapter.setItemToList(
+                        response.data.movies ?: emptyList()
+                    )
+                }
+
+                is NetworkResponse.Failure -> {
+                    searchAdapter.setItemToList(emptyList())
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val DEFAULT_INCLUDE_ADULT = true
+        private const val DEFAULT_LANGUAGE = "en-US"
+        private const val DEFAULT_PRIMARY_RELEASE_YEAR = ""
+        private const val DEFAULT_PAGE = 1
+        private const val DEFAULT_REGION = ""
+        private const val DEFAULT_YEAR = ""
+
+        fun newInstance(): SearchFragment {
+            return SearchFragment()
         }
     }
 }

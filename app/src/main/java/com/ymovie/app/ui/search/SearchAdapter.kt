@@ -4,12 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.ymovie.app.R
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.databinding.ItemSearchBinding
-import com.ymovie.app.network.NetworkConstants
-import com.ymovie.app.ui.search.SearchAdapter.SearchViewHolder
+import com.ymovie.app.ui.search.viewholder.SearchViewHolder
 
 class SearchAdapter(
     private val context: Context,
@@ -31,31 +28,14 @@ class SearchAdapter(
     }
 
     fun setItemToList(list: List<Movie>) {
-        if (movies.isNotEmpty()) {
-            movies.clear()
-        }
+        movies.let {
+            if (it.isNotEmpty()) {
+                it.clear()
+            }
 
-        movies.addAll(list)
+            it.addAll(list)
 
-        notifyDataSetChanged()
-    }
-
-    class SearchViewHolder(
-        private val binding: ItemSearchBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(context: Context, movie: Movie) {
-            Glide.with(binding.imvThumbnail)
-                .load(NetworkConstants.IMAGE_BASE_URL_W200 + movie.posterPath)
-                .into(binding.imvThumbnail)
-
-            binding.tvTitle.text = movie.originalTitle
-            binding.tvReleaseDate.text = movie.releaseDate
-            binding.tvVoteAverage.text =
-                String.format(
-                    context.getString(R.string.label_number_with_percent),
-                    (movie.voteAverage * 10).toInt()
-                )
+            notifyItemInserted(0)
         }
     }
 }

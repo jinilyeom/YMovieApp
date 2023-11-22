@@ -46,11 +46,16 @@ class SearchAdapter(
 
         fun bind(context: Context, movie: Movie) {
             Glide.with(binding.imvThumbnail)
-                .load(NetworkConstants.IMAGE_BASE_URL_W500 + movie.posterPath)
+                .load(NetworkConstants.IMAGE_BASE_URL_W200 + movie.posterPath)
                 .into(binding.imvThumbnail)
+
             binding.tvTitle.text = movie.originalTitle
             binding.tvReleaseDate.text = movie.releaseDate
-            binding.tvVoteAverage.text = context.getString(R.string.label_user_score, movie.voteAverage)
+            binding.tvVoteAverage.text =
+                String.format(
+                    context.getString(R.string.label_number_with_percent),
+                    (movie.voteAverage * 10).toInt()
+                )
         }
     }
 }

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ymovie.app.data.MovieRepository
+import com.ymovie.app.data.NetworkResponse
+import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.databinding.FragmentHomeBinding
 import com.ymovie.app.network.RetrofitApiClient
@@ -80,10 +82,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        homeViewModel.homeDataLiveData.observe(viewLifecycleOwner) { responseData ->
-            responseData?.let {
-                it.forEach { movies ->
-                    homeAdapter.addItemToList(movies)
+        homeViewModel.homeDataLiveData.observe(viewLifecycleOwner) { responses ->
+            responses.forEach { response ->
+                when (response) {
+                    is NetworkResponse.Success -> {
+                        homeAdapter.addItemToList(response.data)
+                    }
+
+                    is NetworkResponse.Failure -> {
+                        homeAdapter.addItemToList(MovieList())
+                    }
                 }
             }
         }

@@ -15,51 +15,30 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var _homeDataLiveData: MutableLiveData<ArrayList<MovieList>> = MutableLiveData()
-    val homeDataLiveData: LiveData<ArrayList<MovieList>> get() = _homeDataLiveData
+    private var _homeDataLiveData: MutableLiveData<ArrayList<NetworkResponse<MovieList>>> = MutableLiveData()
+    val homeDataLiveData: LiveData<ArrayList<NetworkResponse<MovieList>>> get() = _homeDataLiveData
 
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     fun fetchHomeData(language: String, page: Int, region: String) {
         scope.launch {
             val job1 = async {
-                val networkResponse = movieRepository.fetchNowPlayingMovies(language, page, region)
-                responseResult(networkResponse, "", HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal)
+                movieRepository.fetchNowPlayingMovies(language, page, region)
             }
 
             val job2 = async {
-                val networkResponse = movieRepository.fetchPopularMovies(language, page, region)
-                responseResult(networkResponse, "Popular", HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal)
+                movieRepository.fetchPopularMovies(language, page, region)
             }
 
             val job3 = async {
-                val networkResponse = movieRepository.fetchTopRatedMovies(language, page, region)
-                responseResult(networkResponse, "Top Rated", HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal)
+                movieRepository.fetchTopRatedMovies(language, page, region)
             }
 
             val job4 = async {
-                val networkResponse = movieRepository.fetchUpcomingMovies(language, page, region)
-                responseResult(networkResponse, "Upcoming", HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal)
+                movieRepository.fetchUpcomingMovies(language, page, region)
             }
 
             _homeDataLiveData.value = arrayListOf(job1.await(), job2.await(), job3.await(), job4.await())
-        }
-    }
-
-    private fun responseResult(data: NetworkResponse<MovieList>, header: String, viewType: Int): MovieList {
-        return data.let { response ->
-            when (response) {
-                is NetworkResponse.Success -> {
-                    response.data.apply {
-                        this.header = header
-                        this.viewType = viewType
-                    }
-                }
-
-                is NetworkResponse.Failure -> {
-                    MovieList()
-                }
-            }
         }
     }
 

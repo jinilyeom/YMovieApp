@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.MovieRepository
 import com.ymovie.app.data.NetworkResponse
 import com.ymovie.app.data.source.RemoteMovieDataSource
@@ -24,6 +26,9 @@ class SearchFragment : Fragment() {
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var searchLinearLayoutManager: LinearLayoutManager
+
+    private var currentPage: Int = DEFAULT_PAGE
+    private var totalPage: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -63,6 +68,33 @@ class SearchFragment : Fragment() {
             it.layoutManager = searchLinearLayoutManager
             it.adapter = searchAdapter
             it.addItemDecoration(RecyclerViewItemOffset(rect))
+            it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                        return
+                    }
+
+                    val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    linearLayoutManager.let { layoutManager ->
+                        val itemCount = layoutManager.itemCount
+                        val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
+
+                        if (currentPage <= totalPage && lastVisible == itemCount - 1) {
+                            searchViewModel.searchMovie(
+                                binding.searchView.text.toString(),
+                                DEFAULT_INCLUDE_ADULT,
+                                DEFAULT_LANGUAGE,
+                                DEFAULT_PRIMARY_RELEASE_YEAR,
+                                currentPage,
+                                DEFAULT_REGION,
+                                DEFAULT_YEAR
+                            )
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -70,18 +102,25 @@ class SearchFragment : Fragment() {
         binding.searchView.let {
             it.setupWithSearchBar(binding.searchBar)
             it.editText.setOnEditorActionListener { v, actionId, event ->
-                searchViewModel.searchMovie(
-                    binding.searchView.text.toString(),
-                    DEFAULT_INCLUDE_ADULT,
-                    DEFAULT_LANGUAGE,
-                    DEFAULT_PRIMARY_RELEASE_YEAR,
-                    DEFAULT_PAGE,
-                    DEFAULT_REGION,
-                    DEFAULT_YEAR
-                )
+                when (actionId) {
+                    IME_ACTION_SEARCH -> {
+                        currentPage = DEFAULT_PAGE
+                        searchAdapter.clearList()
 
-                binding.searchBar.text = binding.searchView.text
-                binding.searchView.hide()
+                        searchViewModel.searchMovie(
+                            binding.searchView.text.toString(),
+                            DEFAULT_INCLUDE_ADULT,
+                            DEFAULT_LANGUAGE,
+                            DEFAULT_PRIMARY_RELEASE_YEAR,
+                            currentPage,
+                            DEFAULT_REGION,
+                            DEFAULT_YEAR
+                        )
+
+                        binding.searchBar.text = binding.searchView.text
+                        binding.searchView.hide()
+                    }
+                }
 
                 false
             }
@@ -92,13 +131,16 @@ class SearchFragment : Fragment() {
         searchViewModel.searchResultLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkResponse.Success -> {
-                    searchAdapter.setItemToList(
-                        response.data.movies ?: emptyList()
-                    )
+                    response.let {
+                        currentPage = it.data.page + 1
+                        totalPage = it.data.totalPage
+
+                        searchAdapter.addItemToList(it.data.movies ?: emptyList())
+                    }
                 }
 
                 is NetworkResponse.Failure -> {
-                    searchAdapter.setItemToList(emptyList())
+                    searchAdapter.addItemToList(emptyList())
                 }
             }
         }

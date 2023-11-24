@@ -27,15 +27,19 @@ class SearchAdapter(
         return movies.size
     }
 
-    fun setItemToList(list: List<Movie>) {
+    fun addItemToList(list: List<Movie>) {
         movies.let {
-            if (it.isNotEmpty()) {
-                it.clear()
-            }
-
             it.addAll(list)
 
-            notifyItemInserted(0)
+            notifyDataSetChanged()
         }
+    }
+
+    fun clearList() {
+        if (movies.isEmpty()) {
+            return
+        }
+
+        movies.clear()
     }
 }

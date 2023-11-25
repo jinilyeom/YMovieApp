@@ -27,16 +27,7 @@ class HomeFragment : Fragment() {
     private lateinit var homeAdapter: HomeAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
-    private var currentPage = 1
-
-    companion object {
-        private const val DEFAULT_LANGUAGE = "en-US"
-        private const val DEFAULT_REGION = ""
-
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
-        }
-    }
+    private var currentPage = DEFAULT_PAGE
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -94,6 +85,16 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    companion object {
+        private const val DEFAULT_PAGE = 1
+        private const val DEFAULT_LANGUAGE = "en-US"
+        private const val DEFAULT_REGION = ""
+
+        fun newInstance(): HomeFragment {
+            return HomeFragment()
         }
     }
 }

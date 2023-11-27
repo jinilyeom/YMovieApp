@@ -52,7 +52,6 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        homeViewModel.clearHomeDataLiveData()
         _binding = null
     }
 

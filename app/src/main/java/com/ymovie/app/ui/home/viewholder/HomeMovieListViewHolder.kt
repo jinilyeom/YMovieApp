@@ -1,12 +1,17 @@
 package com.ymovie.app.ui.home.viewholder
 
 import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ymovie.app.R
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.databinding.ItemHomeMovieListBinding
 import com.ymovie.app.network.NetworkConstants
+import com.ymovie.app.ui.UiConstants.MOVIE_ID
+import com.ymovie.app.ui.UiConstants.MOVIE_NAME
+import com.ymovie.app.ui.detail.MovieDetailActivity
 
 class HomeMovieListViewHolder(
     private val binding: ItemHomeMovieListBinding
@@ -47,5 +52,16 @@ class HomeMovieListViewHolder(
 
         binding.tvTitle.text = movie.originalTitle
         binding.tvReleaseDate.text = movie.releaseDate
+
+        binding.cvMovie.setOnClickListener {
+            ContextCompat.startActivity(
+                context,
+                Intent(context, MovieDetailActivity::class.java).apply {
+                    putExtra(MOVIE_ID, movie.id)
+                    putExtra(MOVIE_NAME, movie.originalTitle)
+                },
+                null
+            )
+        }
     }
 }

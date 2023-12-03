@@ -1,5 +1,7 @@
 package com.ymovie.app.data.source
 
+import com.ymovie.app.data.model.movie.Credit
+import com.ymovie.app.data.model.movie.MovieDetail
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.network.service.MovieService
 
@@ -30,5 +32,13 @@ class RemoteMovieDataSource(private val service: MovieService) {
         year: String
     ): MovieList {
         return service.searchMovie(query, includeAdult, language, primaryReleaseYear, page, region, year)
+    }
+
+    suspend fun fetchMovieDetails(movieId: Int): MovieDetail {
+        return service.fetchMovieDetails(movieId)
+    }
+
+    suspend fun fetchCredits(movieId: Int): Credit {
+        return service.fetchCredits(movieId)
     }
 }

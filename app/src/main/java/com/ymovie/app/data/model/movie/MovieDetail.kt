@@ -15,7 +15,7 @@ data class MovieDetail(
     var belongsToCollection: BelongsToCollection?,
     @SerializedName("budget")
     @Expose
-    var budget: Int,
+    var budget: Long,
     @SerializedName("genres")
     @Expose
     var genres: List<Genre>?,
@@ -54,7 +54,7 @@ data class MovieDetail(
     var releaseDate: String,
     @SerializedName("revenue")
     @Expose
-    var revenue: Int,
+    var revenue: Long,
     @SerializedName("runtime")
     @Expose
     var runtime: Int,

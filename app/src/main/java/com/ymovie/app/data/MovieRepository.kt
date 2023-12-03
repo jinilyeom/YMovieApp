@@ -1,5 +1,7 @@
 package com.ymovie.app.data
 
+import com.ymovie.app.data.model.movie.Credit
+import com.ymovie.app.data.model.movie.MovieDetail
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.ui.home.HomeViewType
@@ -70,6 +72,26 @@ class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) 
             val networkResponse = remoteMovieDataSource.searchMovie(
                 query, includeAdult, language, primaryReleaseYear, page, region, year
             )
+
+            NetworkResponse.Success(networkResponse)
+        } catch (e: Exception) {
+            NetworkResponse.Failure(e)
+        }
+    }
+
+    suspend fun fetchMovieDetails(movieId: Int): NetworkResponse<MovieDetail> {
+        return try {
+            val networkResponse = remoteMovieDataSource.fetchMovieDetails(movieId)
+
+            NetworkResponse.Success(networkResponse)
+        } catch (e: Exception) {
+            NetworkResponse.Failure(e)
+        }
+    }
+
+    suspend fun fetchCredits(movieId: Int): NetworkResponse<Credit> {
+        return try {
+            val networkResponse = remoteMovieDataSource.fetchCredits(movieId)
 
             NetworkResponse.Success(networkResponse)
         } catch (e: Exception) {

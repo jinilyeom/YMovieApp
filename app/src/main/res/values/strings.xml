@@ -2,7 +2,14 @@
     <string name="app_name">YMovie</string>
     <string name="label_navigation_home">Home</string>
     <string name="label_navigation_search">Search</string>
-    <string name="label_user_score">User Score: %1$f</string>
+    <string name="label_user_score">User Score</string>
     <string name="label_number_with_percent">%1$d\%%</string>
     <string name="hint_search">Enter text to search</string>
+    <string name="label_overview">Overview</string>
+    <string name="label_top_cast">Top Cast</string>
+    <string name="label_director">Director</string>
+    <string name="label_writer">Writer</string>
+    <string name="label_runtime_hour_minute">%1$d시간 %2$d분</string>
+    <string name="label_runtime_hour">%1$d시간</string>
+    <string name="label_runtime_minute">%1$d분</string>
 </resources>

@@ -27,6 +27,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.detail.MovieDetailActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
+
     </application>
 
 </manifest>

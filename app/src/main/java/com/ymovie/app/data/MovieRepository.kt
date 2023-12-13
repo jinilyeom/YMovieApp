@@ -76,9 +76,9 @@ class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) 
                     query, includeAdult, language, primaryReleaseYear, page, region, year
                 )
 
-                NetworkResponse.Success(networkResponse)
+                emit(NetworkResponse.Success(networkResponse))
             } catch (e: Exception) {
-                NetworkResponse.Failure(e)
+                emit(NetworkResponse.Failure(e))
             }
         }
     }
@@ -88,9 +88,9 @@ class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) 
             try {
                 val networkResponse = remoteMovieDataSource.fetchMovieDetails(movieId)
 
-                NetworkResponse.Success(networkResponse)
+                emit(NetworkResponse.Success(networkResponse))
             } catch (e: Exception) {
-                NetworkResponse.Failure(e)
+                emit(NetworkResponse.Failure(e))
             }
         }
     }
@@ -100,9 +100,9 @@ class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) 
             try {
                 val networkResponse = remoteMovieDataSource.fetchCredits(movieId)
 
-                NetworkResponse.Success(networkResponse)
+                emit(NetworkResponse.Success(networkResponse))
             } catch (e: Exception) {
-                NetworkResponse.Failure(e)
+                emit(NetworkResponse.Failure(e))
             }
         }
     }

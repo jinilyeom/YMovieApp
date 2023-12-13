@@ -1,7 +1,5 @@
 package com.ymovie.app.ui.detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ymovie.app.data.MovieRepository
@@ -11,36 +9,36 @@ import com.ymovie.app.data.model.movie.MovieDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 
 class MovieDetailViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var _detailBasicsLiveData: MutableLiveData<NetworkResponse<MovieDetail>> = MutableLiveData()
-    val detailBasicsLiveData: LiveData<NetworkResponse<MovieDetail>> get() = _detailBasicsLiveData
-    private var _creditsLiveData: MutableLiveData<NetworkResponse<Credit>> = MutableLiveData()
-    val creditsLiveData: LiveData<NetworkResponse<Credit>> get() = _creditsLiveData
-
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-    fun fetchMovieDetails(movieId: Int) {
-        scope.launch {
-            val job = async {
-                movieRepository.fetchMovieDetails(movieId)
-            }
+    private var movieId = MutableStateFlow(-1)
 
-            _detailBasicsLiveData.value = job.await()
-        }
-    }
+    val movieDetail: StateFlow<NetworkResponse<MovieDetail>> = movieId.flatMapLatest { id ->
+        movieRepository.fetchMovieDetails(id)
+    }.stateIn(
+        scope = scope,
+        started = WhileSubscribed(5000),
+        initialValue = NetworkResponse.Loading
+    )
 
-    fun fetchCredits(movieId: Int) {
-        scope.launch {
-            val job = async {
-                movieRepository.fetchCredits(movieId)
-            }
+    val movieCredit: StateFlow<NetworkResponse<Credit>> = movieId.flatMapLatest { id ->
+        movieRepository.fetchCredits(id)
+    }.stateIn(
+        scope = scope,
+        started = WhileSubscribed(5000),
+        initialValue = NetworkResponse.Loading
+    )
 
-            _creditsLiveData.value = job.await()
-        }
+    fun setMovieId(id: Int) {
+        movieId.value = id
     }
 
     override fun onCleared() {

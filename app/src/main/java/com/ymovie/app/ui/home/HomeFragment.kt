@@ -75,6 +75,10 @@ class HomeFragment : Fragment() {
         homeViewModel.homeDataLiveData.observe(viewLifecycleOwner) { responses ->
             responses.forEach { response ->
                 when (response) {
+                    is NetworkResponse.Loading -> {
+
+                    }
+
                     is NetworkResponse.Success -> {
                         homeAdapter.addItemToList(response.data)
                     }

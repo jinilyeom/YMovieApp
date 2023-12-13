@@ -17,6 +17,11 @@ import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.ui.UiConstants.MOVIE_ID
 import com.ymovie.app.ui.UiConstants.MOVIE_NAME
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class MovieDetailFragment : Fragment() {
     private var _binding: FragmentMovieDetailBinding? = null
@@ -28,6 +33,8 @@ class MovieDetailFragment : Fragment() {
         )
         ViewModelProvider(this@MovieDetailFragment, MovieDetailViewModelFactory(repository))[MovieDetailViewModel::class.java]
     }
+
+    private val fragmentScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private var movieId: Int = -1
     private var movieName: String = ""
@@ -50,7 +57,7 @@ class MovieDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        subscribeUi()
+        movieDetailViewModel.setMovieId(movieId)
 
         binding.topAppBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             val position = appBarLayout.totalScrollRange + verticalOffset
@@ -67,9 +74,18 @@ class MovieDetailFragment : Fragment() {
         binding.topToolBar.setNavigationOnClickListener {
             requireActivity().finish()
         }
+    }
 
-        movieDetailViewModel.fetchMovieDetails(movieId)
-        movieDetailViewModel.fetchCredits(movieId)
+    override fun onStart() {
+        super.onStart()
+
+        subscribeUi()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        fragmentScope.cancel()
     }
 
     override fun onDestroyView() {
@@ -79,37 +95,51 @@ class MovieDetailFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        movieDetailViewModel.detailBasicsLiveData.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is NetworkResponse.Success -> {
-                    Glide.with(binding.imvBackdrop)
-                        .load(NetworkConstants.IMAGE_BASE_URL_W500 + response.data.backdropPath)
-                        .into(binding.imvBackdrop)
-                    Glide.with(binding.imvPoster)
-                        .load(NetworkConstants.IMAGE_BASE_URL_W200 + response.data.posterPath)
-                        .into(binding.imvPoster)
+        fragmentScope.launch {
+            launch {
+                movieDetailViewModel.movieDetail.collect { response ->
+                    when (response) {
+                        is NetworkResponse.Loading -> {
 
-                    binding.viewMovieDetailBasics.setMovieDetailData(response.data)
-                }
+                        }
 
-                is NetworkResponse.Failure -> {
+                        is NetworkResponse.Success -> {
+                            Glide.with(binding.imvBackdrop)
+                                .load(NetworkConstants.IMAGE_BASE_URL_W500 + response.data.backdropPath)
+                                .into(binding.imvBackdrop)
+                            Glide.with(binding.imvPoster)
+                                .load(NetworkConstants.IMAGE_BASE_URL_W200 + response.data.posterPath)
+                                .into(binding.imvPoster)
 
-                }
-            }
-        }
+                            binding.viewMovieDetailBasics.setMovieDetailData(response.data)
+                        }
 
-        movieDetailViewModel.creditsLiveData.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is NetworkResponse.Success -> {
-                    binding.viewMovieDetailCredits.let {
-                        it.setHeaderText(getString(R.string.label_top_cast))
-                        it.setCasts(response.data.casts)
-                        it.setCrews(response.data.crews)
+                        is NetworkResponse.Failure -> {
+
+                        }
                     }
                 }
+            }
 
-                is NetworkResponse.Failure -> {
+            launch {
+                movieDetailViewModel.movieCredit.collect { response ->
+                    when (response) {
+                        is NetworkResponse.Loading -> {
 
+                        }
+
+                        is NetworkResponse.Success -> {
+                            binding.viewMovieDetailCredits.let {
+                                it.setHeaderText(getString(R.string.label_top_cast))
+                                it.setCasts(response.data.casts)
+                                it.setCrews(response.data.crews)
+                            }
+                        }
+
+                        is NetworkResponse.Failure -> {
+
+                        }
+                    }
                 }
             }
         }

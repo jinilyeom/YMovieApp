@@ -5,6 +5,8 @@ import com.ymovie.app.data.model.movie.MovieDetail
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.ui.home.HomeViewType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) {
     suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): NetworkResponse<MovieList> {
@@ -67,35 +69,41 @@ class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) 
         page: Int,
         region: String,
         year: String
-    ): NetworkResponse<MovieList> {
-        return try {
-            val networkResponse = remoteMovieDataSource.searchMovie(
-                query, includeAdult, language, primaryReleaseYear, page, region, year
-            )
+    ): Flow<NetworkResponse<MovieList>> {
+        return flow {
+            try {
+                val networkResponse = remoteMovieDataSource.searchMovie(
+                    query, includeAdult, language, primaryReleaseYear, page, region, year
+                )
 
-            NetworkResponse.Success(networkResponse)
-        } catch (e: Exception) {
-            NetworkResponse.Failure(e)
+                NetworkResponse.Success(networkResponse)
+            } catch (e: Exception) {
+                NetworkResponse.Failure(e)
+            }
         }
     }
 
-    suspend fun fetchMovieDetails(movieId: Int): NetworkResponse<MovieDetail> {
-        return try {
-            val networkResponse = remoteMovieDataSource.fetchMovieDetails(movieId)
+    suspend fun fetchMovieDetails(movieId: Int): Flow<NetworkResponse<MovieDetail>> {
+        return flow {
+            try {
+                val networkResponse = remoteMovieDataSource.fetchMovieDetails(movieId)
 
-            NetworkResponse.Success(networkResponse)
-        } catch (e: Exception) {
-            NetworkResponse.Failure(e)
+                NetworkResponse.Success(networkResponse)
+            } catch (e: Exception) {
+                NetworkResponse.Failure(e)
+            }
         }
     }
 
-    suspend fun fetchCredits(movieId: Int): NetworkResponse<Credit> {
-        return try {
-            val networkResponse = remoteMovieDataSource.fetchCredits(movieId)
+    suspend fun fetchCredits(movieId: Int): Flow<NetworkResponse<Credit>> {
+        return flow {
+            try {
+                val networkResponse = remoteMovieDataSource.fetchCredits(movieId)
 
-            NetworkResponse.Success(networkResponse)
-        } catch (e: Exception) {
-            NetworkResponse.Failure(e)
+                NetworkResponse.Success(networkResponse)
+            } catch (e: Exception) {
+                NetworkResponse.Failure(e)
+            }
         }
     }
 }

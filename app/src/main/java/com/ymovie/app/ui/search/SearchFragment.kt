@@ -18,14 +18,27 @@ import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel: SearchViewModel by lazy {
+        val repository = MovieRepository(
+            RemoteMovieDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+        )
+        ViewModelProvider(this@SearchFragment, SearchViewModelFactory(repository))[SearchViewModel::class.java]
+    }
+
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var searchLinearLayoutManager: LinearLayoutManager
+
+    private val fragmentScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private var currentPage: Int = DEFAULT_PAGE
     private var totalPage: Int = 0
@@ -39,14 +52,25 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val repository = MovieRepository(
-            RemoteMovieDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
-        )
-        searchViewModel = ViewModelProvider(this@SearchFragment, SearchViewModelFactory(repository))[SearchViewModel::class.java]
+        searchViewModel.setSearchRequestParam(SearchRequestParam(
+            query = binding.searchView.text.toString(),
+            page = currentPage
+        ))
 
         initAdapter()
         initSearchView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         subscribeUi()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        fragmentScope.cancel()
     }
 
     override fun onDestroyView() {
@@ -82,15 +106,10 @@ class SearchFragment : Fragment() {
                         val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
 
                         if (currentPage <= totalPage && lastVisible == itemCount - 1) {
-                            searchViewModel.searchMovie(
-                                binding.searchView.text.toString(),
-                                DEFAULT_INCLUDE_ADULT,
-                                DEFAULT_LANGUAGE,
-                                DEFAULT_PRIMARY_RELEASE_YEAR,
-                                currentPage,
-                                DEFAULT_REGION,
-                                DEFAULT_YEAR
-                            )
+                            searchViewModel.setSearchRequestParam(SearchRequestParam(
+                                query = binding.searchView.text.toString(),
+                                page = currentPage
+                            ))
                         }
                     }
                 }
@@ -107,15 +126,10 @@ class SearchFragment : Fragment() {
                         currentPage = DEFAULT_PAGE
                         searchAdapter.clearList()
 
-                        searchViewModel.searchMovie(
-                            binding.searchView.text.toString(),
-                            DEFAULT_INCLUDE_ADULT,
-                            DEFAULT_LANGUAGE,
-                            DEFAULT_PRIMARY_RELEASE_YEAR,
-                            currentPage,
-                            DEFAULT_REGION,
-                            DEFAULT_YEAR
-                        )
+                        searchViewModel.setSearchRequestParam(SearchRequestParam(
+                            query = binding.searchView.text.toString(),
+                            page = currentPage
+                        ))
 
                         binding.searchBar.text = binding.searchView.text
                         binding.searchView.hide()
@@ -128,31 +142,32 @@ class SearchFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        searchViewModel.searchResultLiveData.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is NetworkResponse.Success -> {
-                    response.let {
-                        currentPage = it.data.page + 1
-                        totalPage = it.data.totalPage
+        fragmentScope.launch {
+            searchViewModel.searchMovie.collect { response ->
+                when (response) {
+                    is NetworkResponse.Loading -> {
 
-                        searchAdapter.addItemToList(it.data.movies ?: emptyList())
                     }
-                }
 
-                is NetworkResponse.Failure -> {
-                    searchAdapter.addItemToList(emptyList())
+                    is NetworkResponse.Success -> {
+                        response.let {
+                            currentPage = it.data.page + 1
+                            totalPage = it.data.totalPage
+
+                            searchAdapter.addItemToList(it.data.movies ?: emptyList())
+                        }
+                    }
+
+                    is NetworkResponse.Failure -> {
+                        searchAdapter.addItemToList(emptyList())
+                    }
                 }
             }
         }
     }
 
     companion object {
-        private const val DEFAULT_INCLUDE_ADULT = true
-        private const val DEFAULT_LANGUAGE = "en-US"
-        private const val DEFAULT_PRIMARY_RELEASE_YEAR = ""
         private const val DEFAULT_PAGE = 1
-        private const val DEFAULT_REGION = ""
-        private const val DEFAULT_YEAR = ""
 
         fun newInstance(): SearchFragment {
             return SearchFragment()

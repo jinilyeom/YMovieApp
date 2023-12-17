@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.MovieRepository
@@ -18,10 +21,6 @@ import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
@@ -37,8 +36,6 @@ class SearchFragment : Fragment() {
 
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var searchLinearLayoutManager: LinearLayoutManager
-
-    private val fragmentScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private var currentPage: Int = DEFAULT_PAGE
     private var totalPage: Int = 0
@@ -59,18 +56,7 @@ class SearchFragment : Fragment() {
 
         initAdapter()
         initSearchView()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
         subscribeUi()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        fragmentScope.cancel()
     }
 
     override fun onDestroyView() {
@@ -142,24 +128,26 @@ class SearchFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        fragmentScope.launch {
-            searchViewModel.searchMovie.collect { response ->
-                when (response) {
-                    is NetworkResponse.Loading -> {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                searchViewModel.searchMovie.collect { response ->
+                    when (response) {
+                        is NetworkResponse.Loading -> {
 
-                    }
-
-                    is NetworkResponse.Success -> {
-                        response.let {
-                            currentPage = it.data.page + 1
-                            totalPage = it.data.totalPage
-
-                            searchAdapter.addItemToList(it.data.movies ?: emptyList())
                         }
-                    }
 
-                    is NetworkResponse.Failure -> {
-                        searchAdapter.addItemToList(emptyList())
+                        is NetworkResponse.Success -> {
+                            response.let {
+                                currentPage = it.data.page + 1
+                                totalPage = it.data.totalPage
+
+                                searchAdapter.addItemToList(it.data.movies ?: emptyList())
+                            }
+                        }
+
+                        is NetworkResponse.Failure -> {
+                            searchAdapter.addItemToList(emptyList())
+                        }
                     }
                 }
             }

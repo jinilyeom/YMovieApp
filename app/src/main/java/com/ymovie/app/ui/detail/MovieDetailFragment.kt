@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.ymovie.app.R
 import com.ymovie.app.data.MovieRepository
@@ -17,10 +20,6 @@ import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.ui.UiConstants.MOVIE_ID
 import com.ymovie.app.ui.UiConstants.MOVIE_NAME
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class MovieDetailFragment : Fragment() {
@@ -33,8 +32,6 @@ class MovieDetailFragment : Fragment() {
         )
         ViewModelProvider(this@MovieDetailFragment, MovieDetailViewModelFactory(repository))[MovieDetailViewModel::class.java]
     }
-
-    private val fragmentScope = CoroutineScope(Job() + Dispatchers.Main)
 
     private var movieId: Int = -1
     private var movieName: String = ""
@@ -59,6 +56,9 @@ class MovieDetailFragment : Fragment() {
 
         movieDetailViewModel.setMovieId(movieId)
 
+        fetchMovieDetails()
+        fetchMovieCredits()
+
         binding.topAppBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             val position = appBarLayout.totalScrollRange + verticalOffset
 
@@ -76,27 +76,15 @@ class MovieDetailFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        subscribeUi()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        fragmentScope.cancel()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
         _binding = null
     }
 
-    private fun subscribeUi() {
-        fragmentScope.launch {
-            launch {
+    private fun fetchMovieDetails() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 movieDetailViewModel.movieDetail.collect { response ->
                     when (response) {
                         is NetworkResponse.Loading -> {
@@ -120,8 +108,12 @@ class MovieDetailFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
 
-            launch {
+    private fun fetchMovieCredits() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 movieDetailViewModel.movieCredit.collect { response ->
                     when (response) {
                         is NetworkResponse.Loading -> {

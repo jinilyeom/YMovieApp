@@ -4,24 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
 import com.ymovie.app.data.NetworkResponse
 import com.ymovie.app.data.model.movie.MovieList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
     private var _homeDataLiveData: MutableLiveData<ArrayList<NetworkResponse<MovieList>>> = MutableLiveData()
     val homeDataLiveData: LiveData<ArrayList<NetworkResponse<MovieList>>> get() = _homeDataLiveData
 
-    private val scope = CoroutineScope(Job() + Dispatchers.Main)
-
     fun fetchHomeData(language: String, page: Int, region: String) {
-        scope.launch {
+        viewModelScope.launch {
             val job1 = async {
                 movieRepository.fetchNowPlayingMovies(language, page, region)
             }
@@ -40,12 +35,6 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
 
             _homeDataLiveData.value = arrayListOf(job1.await(), job2.await(), job3.await(), job4.await())
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-
-        scope.cancel()
     }
 }
 

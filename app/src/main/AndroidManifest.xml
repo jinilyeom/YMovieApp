@@ -17,8 +17,8 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:configChanges="orientation|screenSize"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,8 +29,8 @@
 
         <activity
             android:name=".ui.detail.MovieDetailActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
     </application>
 

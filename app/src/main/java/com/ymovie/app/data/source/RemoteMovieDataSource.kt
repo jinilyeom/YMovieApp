@@ -4,6 +4,8 @@ import com.ymovie.app.data.model.movie.Credit
 import com.ymovie.app.data.model.movie.MovieDetail
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.network.service.MovieService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class RemoteMovieDataSource(private val service: MovieService) {
     suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): MovieList {
@@ -30,15 +32,21 @@ class RemoteMovieDataSource(private val service: MovieService) {
         page: Int,
         region: String,
         year: String
-    ): MovieList {
-        return service.searchMovie(query, includeAdult, language, primaryReleaseYear, page, region, year)
+    ): Flow<MovieList> {
+        return flow {
+            emit(service.searchMovie(query, includeAdult, language, primaryReleaseYear, page, region, year))
+        }
     }
 
-    suspend fun fetchMovieDetails(movieId: Int): MovieDetail {
-        return service.fetchMovieDetails(movieId)
+    suspend fun fetchMovieDetails(movieId: Int): Flow<MovieDetail> {
+        return flow {
+            emit(service.fetchMovieDetails(movieId))
+        }
     }
 
-    suspend fun fetchCredits(movieId: Int): Credit {
-        return service.fetchCredits(movieId)
+    suspend fun fetchCredits(movieId: Int): Flow<Credit> {
+        return flow {
+            emit(service.fetchCredits(movieId))
+        }
     }
 }

@@ -56,8 +56,8 @@ class MovieDetailFragment : Fragment() {
 
         movieDetailViewModel.setMovieId(movieId)
 
-        fetchMovieDetails()
-        fetchMovieCredits()
+        resultMovieDetails()
+        resultMovieCredits()
 
         binding.topAppBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             val position = appBarLayout.totalScrollRange + verticalOffset
@@ -82,7 +82,7 @@ class MovieDetailFragment : Fragment() {
         _binding = null
     }
 
-    private fun fetchMovieDetails() {
+    private fun resultMovieDetails() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 movieDetailViewModel.movieDetail.collect { response ->
@@ -111,7 +111,7 @@ class MovieDetailFragment : Fragment() {
         }
     }
 
-    private fun fetchMovieCredits() {
+    private fun resultMovieCredits() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 movieDetailViewModel.movieCredit.collect { response ->

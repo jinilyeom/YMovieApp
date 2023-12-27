@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
         homeViewModel = ViewModelProvider(this@HomeFragment, HomeViewModelFactory(repository))[HomeViewModel::class.java]
 
         initAdapter()
-        subscribeUi()
+        resultHomeData()
 
         homeViewModel.fetchHomeData(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
     }
@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun subscribeUi() {
+    private fun resultHomeData() {
         homeViewModel.homeDataLiveData.observe(viewLifecycleOwner) { responses ->
             responses.forEach { response ->
                 when (response) {

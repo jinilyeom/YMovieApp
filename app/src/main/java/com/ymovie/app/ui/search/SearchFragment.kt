@@ -56,7 +56,7 @@ class SearchFragment : Fragment() {
 
         initAdapter()
         initSearchView()
-        subscribeUi()
+        resultSearchMovie()
     }
 
     override fun onDestroyView() {
@@ -127,7 +127,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun subscribeUi() {
+    private fun resultSearchMovie() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 searchViewModel.searchMovie.collect { response ->

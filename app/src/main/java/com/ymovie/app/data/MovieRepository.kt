@@ -7,7 +7,7 @@ import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.ui.home.HomeViewType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) {
     suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): NetworkResponse<MovieList> {
@@ -71,40 +71,34 @@ class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) 
         region: String,
         year: String
     ): Flow<NetworkResponse<MovieList>> {
-        return flow {
-            remoteMovieDataSource.searchMovie(
-                query, includeAdult, language, primaryReleaseYear, page, region, year
-            )
-                .catch {
-                    emit(NetworkResponse.Failure(Exception(it)))
-                }
-                .collect {
-                    emit(NetworkResponse.Success(it))
-                }
-        }
+        return remoteMovieDataSource.searchMovie(
+            query, includeAdult, language, primaryReleaseYear, page, region, year
+        )
+            .catch {
+                NetworkResponse.Failure(Exception(it))
+            }
+            .map {
+                NetworkResponse.Success(it)
+            }
     }
 
     suspend fun fetchMovieDetails(movieId: Int): Flow<NetworkResponse<MovieDetail>> {
-        return flow {
-            remoteMovieDataSource.fetchMovieDetails(movieId)
-                .catch {
-                    emit(NetworkResponse.Failure(Exception(it)))
-                }
-                .collect {
-                    emit(NetworkResponse.Success(it))
-                }
-        }
+        return remoteMovieDataSource.fetchMovieDetails(movieId)
+            .catch {
+                NetworkResponse.Failure(Exception(it))
+            }
+            .map {
+                NetworkResponse.Success(it)
+            }
     }
 
     suspend fun fetchCredits(movieId: Int): Flow<NetworkResponse<Credit>> {
-        return flow {
-            remoteMovieDataSource.fetchCredits(movieId)
-                .catch {
-                    emit(NetworkResponse.Failure(Exception(it)))
-                }
-                .collect {
-                    emit(NetworkResponse.Success(it))
-                }
-        }
+        return remoteMovieDataSource.fetchCredits(movieId)
+            .catch {
+                NetworkResponse.Failure(Exception(it))
+            }
+            .map {
+                NetworkResponse.Success(it)
+            }
     }
 }

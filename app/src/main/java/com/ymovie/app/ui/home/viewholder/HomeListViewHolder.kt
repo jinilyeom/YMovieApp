@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.data.model.movie.MovieList
-import com.ymovie.app.databinding.ItemHomeTypeDefaultBinding
+import com.ymovie.app.databinding.ItemHomeTypeListBinding
 import com.ymovie.app.ui.home.adapter.HomeMovieListAdapter
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
 
-class HomeViewHolder(
-    private val binding: ItemHomeTypeDefaultBinding
+class HomeListViewHolder(
+    private val binding: ItemHomeTypeListBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(context: Context, list: MovieList) {

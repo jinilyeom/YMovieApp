@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.ymovie.app.data.model.movie.MovieList
-import com.ymovie.app.databinding.ItemHomeType1Binding
-import com.ymovie.app.databinding.ItemHomeTypeDefaultBinding
+import com.ymovie.app.databinding.ItemHomeTypeListBinding
+import com.ymovie.app.databinding.ItemHomeTypePagerBinding
 import com.ymovie.app.ui.home.HomeViewType
 import com.ymovie.app.ui.home.viewholder.HomePagerViewHolder
-import com.ymovie.app.ui.home.viewholder.HomeViewHolder
+import com.ymovie.app.ui.home.viewholder.HomeListViewHolder
 
 class HomeAdapter(
     private val context: Context,
@@ -21,13 +21,13 @@ class HomeAdapter(
         return when (viewType) {
             HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal -> {
                 HomePagerViewHolder(
-                    ItemHomeType1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ItemHomeTypePagerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
 
             else -> {
-                HomeViewHolder(
-                    ItemHomeTypeDefaultBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                HomeListViewHolder(
+                    ItemHomeTypeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
             }
         }
@@ -40,7 +40,7 @@ class HomeAdapter(
             }
 
             else -> {
-                (holder as HomeViewHolder).bind(context, homeData[position])
+                (holder as HomeListViewHolder).bind(context, homeData[position])
             }
         }
     }

@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.ymovie.app.R
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.NetworkResponse
 import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.databinding.FragmentMovieDetailBinding
 import com.ymovie.app.network.NetworkConstants
@@ -87,11 +86,11 @@ class MovieDetailFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 movieDetailViewModel.movieDetail.collect { response ->
                     when (response) {
-                        is NetworkResponse.Loading -> {
+                        is MovieDetailUiState.Loading -> {
 
                         }
 
-                        is NetworkResponse.Success -> {
+                        is MovieDetailUiState.Success -> {
                             Glide.with(binding.imvBackdrop)
                                 .load(NetworkConstants.IMAGE_BASE_URL_W500 + response.data.backdropPath)
                                 .into(binding.imvBackdrop)
@@ -102,7 +101,7 @@ class MovieDetailFragment : Fragment() {
                             binding.viewMovieDetailBasics.setMovieDetailData(response.data)
                         }
 
-                        is NetworkResponse.Failure -> {
+                        is MovieDetailUiState.Failure -> {
 
                         }
                     }
@@ -116,11 +115,11 @@ class MovieDetailFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 movieDetailViewModel.movieCredit.collect { response ->
                     when (response) {
-                        is NetworkResponse.Loading -> {
+                        is MovieCreditUiState.Loading -> {
 
                         }
 
-                        is NetworkResponse.Success -> {
+                        is MovieCreditUiState.Success -> {
                             binding.viewMovieDetailCredits.let {
                                 it.setHeaderText(getString(R.string.label_top_cast))
                                 it.setCasts(response.data.casts)
@@ -128,7 +127,7 @@ class MovieDetailFragment : Fragment() {
                             }
                         }
 
-                        is NetworkResponse.Failure -> {
+                        is MovieCreditUiState.Failure -> {
 
                         }
                     }

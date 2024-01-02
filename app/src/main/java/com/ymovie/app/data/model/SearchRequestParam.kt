@@ -1,4 +1,4 @@
-package com.ymovie.app.ui.search
+package com.ymovie.app.data.model
 
 data class SearchRequestParam(
     var query: String = "",

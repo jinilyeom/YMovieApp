@@ -14,7 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.NetworkResponse
+import com.ymovie.app.data.model.SearchRequestParam
 import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.databinding.FragmentSearchBinding
 import com.ymovie.app.network.RetrofitApiClient
@@ -49,10 +49,12 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchViewModel.setSearchRequestParam(SearchRequestParam(
-            query = binding.searchView.text.toString(),
-            page = currentPage
-        ))
+        searchViewModel.setSearchRequestParam(
+            SearchRequestParam(
+                query = binding.searchView.text.toString(),
+                page = currentPage
+            )
+        )
 
         initAdapter()
         initSearchView()
@@ -92,10 +94,12 @@ class SearchFragment : Fragment() {
                         val lastVisible = layoutManager.findLastCompletelyVisibleItemPosition()
 
                         if (currentPage <= totalPage && lastVisible == itemCount - 1) {
-                            searchViewModel.setSearchRequestParam(SearchRequestParam(
-                                query = binding.searchView.text.toString(),
-                                page = currentPage
-                            ))
+                            searchViewModel.setSearchRequestParam(
+                                SearchRequestParam(
+                                    query = binding.searchView.text.toString(),
+                                    page = currentPage
+                                )
+                            )
                         }
                     }
                 }
@@ -112,10 +116,12 @@ class SearchFragment : Fragment() {
                         currentPage = DEFAULT_PAGE
                         searchAdapter.clearList()
 
-                        searchViewModel.setSearchRequestParam(SearchRequestParam(
-                            query = binding.searchView.text.toString(),
-                            page = currentPage
-                        ))
+                        searchViewModel.setSearchRequestParam(
+                            SearchRequestParam(
+                                query = binding.searchView.text.toString(),
+                                page = currentPage
+                            )
+                        )
 
                         binding.searchBar.text = binding.searchView.text
                         binding.searchView.hide()
@@ -132,11 +138,11 @@ class SearchFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 searchViewModel.searchMovie.collect { response ->
                     when (response) {
-                        is NetworkResponse.Loading -> {
+                        is SearchUiState.Loading -> {
 
                         }
 
-                        is NetworkResponse.Success -> {
+                        is SearchUiState.Success -> {
                             response.let {
                                 currentPage = it.data.page + 1
                                 totalPage = it.data.totalPage
@@ -145,7 +151,7 @@ class SearchFragment : Fragment() {
                             }
                         }
 
-                        is NetworkResponse.Failure -> {
+                        is SearchUiState.Failure -> {
                             searchAdapter.addItemToList(emptyList())
                         }
                     }

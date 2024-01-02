@@ -4,32 +4,43 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.NetworkResponse
-import com.ymovie.app.data.model.movie.Credit
-import com.ymovie.app.data.model.movie.MovieDetail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class MovieDetailViewModel(private val movieRepository: MovieRepository) : ViewModel() {
     private var movieId = MutableStateFlow(-1)
 
-    val movieDetail: StateFlow<NetworkResponse<MovieDetail>> = movieId.flatMapLatest { id ->
+    val movieDetail: StateFlow<MovieDetailUiState> = movieId.flatMapLatest { id ->
         movieRepository.fetchMovieDetails(id)
+            .catch { e ->
+                MovieDetailUiState.Failure(Exception(e))
+            }
+            .map { detail ->
+                MovieDetailUiState.Success(detail)
+            }
     }.stateIn(
         scope = viewModelScope,
         started = WhileSubscribed(5000),
-        initialValue = NetworkResponse.Loading
+        initialValue = MovieDetailUiState.Loading
     )
 
-    val movieCredit: StateFlow<NetworkResponse<Credit>> = movieId.flatMapLatest { id ->
+    val movieCredit: StateFlow<MovieCreditUiState> = movieId.flatMapLatest { id ->
         movieRepository.fetchCredits(id)
+            .catch { e ->
+                MovieCreditUiState.Failure(Exception(e))
+            }
+            .map { credit ->
+                MovieCreditUiState.Success(credit)
+            }
     }.stateIn(
         scope = viewModelScope,
         started = WhileSubscribed(5000),
-        initialValue = NetworkResponse.Loading
+        initialValue = MovieCreditUiState.Loading
     )
 
     fun setMovieId(id: Int) {

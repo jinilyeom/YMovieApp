@@ -18,7 +18,7 @@ import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.databinding.FragmentSearchBinding
 import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
-import com.ymovie.app.util.RecyclerViewItemOffset
+import com.ymovie.app.util.RecyclerViewItemDecoration
 import com.ymovie.app.util.convertDpToPx
 import com.ymovie.app.util.setItemOffset
 import kotlinx.coroutines.launch
@@ -77,7 +77,7 @@ class SearchFragment : Fragment() {
             it.layoutManager = searchLinearLayoutManager
             it.adapter = searchAdapter
             it.addItemDecoration(
-                RecyclerViewItemOffset(setItemOffset(topPx = convertDpToPx(20F, resources)))
+                RecyclerViewItemDecoration(setItemOffset(topPx = convertDpToPx(20F, resources)))
             )
             it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

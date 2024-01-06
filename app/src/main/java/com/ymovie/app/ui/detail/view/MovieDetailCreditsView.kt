@@ -10,7 +10,7 @@ import com.ymovie.app.data.model.movie.Cast
 import com.ymovie.app.data.model.movie.Crew
 import com.ymovie.app.databinding.ViewMovieDetailCreditsBinding
 import com.ymovie.app.ui.detail.adapter.MovieCastsAdapter
-import com.ymovie.app.util.RecyclerViewItemOffset
+import com.ymovie.app.util.RecyclerViewItemDecoration
 import com.ymovie.app.util.convertDpToPx
 import com.ymovie.app.util.setItemOffset
 
@@ -45,7 +45,7 @@ class MovieDetailCreditsView(
             }
             it.adapter = movieCastsAdapter
             it.addItemDecoration(
-                RecyclerViewItemOffset(setItemOffset(leftPx = convertDpToPx(16F, resources)))
+                RecyclerViewItemDecoration(setItemOffset(leftPx = convertDpToPx(16F, resources)))
             )
         }
     }

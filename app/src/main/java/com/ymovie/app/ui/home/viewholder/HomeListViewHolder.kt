@@ -7,7 +7,7 @@ import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.databinding.ItemHomeTypeListBinding
 import com.ymovie.app.ui.home.adapter.HomeMovieListAdapter
-import com.ymovie.app.util.RecyclerViewItemOffset
+import com.ymovie.app.util.RecyclerViewItemDecoration
 import com.ymovie.app.util.convertDpToPx
 import com.ymovie.app.util.setItemOffset
 
@@ -26,7 +26,7 @@ class HomeListViewHolder(
             this.layoutManager = linearLayoutManager
             this.adapter = HomeMovieListAdapter(context, list.movies as MutableList<Movie>)
             this.addItemDecoration(
-                RecyclerViewItemOffset(setItemOffset(leftPx = convertDpToPx(16F, context.resources)))
+                RecyclerViewItemDecoration(setItemOffset(leftPx = convertDpToPx(16F, context.resources)))
             )
         }
     }

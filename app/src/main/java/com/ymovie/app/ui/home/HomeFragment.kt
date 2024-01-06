@@ -18,7 +18,7 @@ import com.ymovie.app.databinding.FragmentHomeBinding
 import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.ui.home.adapter.HomeAdapter
-import com.ymovie.app.util.RecyclerViewItemOffset
+import com.ymovie.app.util.RecyclerViewItemDecoration
 import com.ymovie.app.util.convertDpToPx
 import com.ymovie.app.util.setItemOffset
 import kotlinx.coroutines.launch
@@ -69,7 +69,7 @@ class HomeFragment : Fragment() {
             this.layoutManager = linearLayoutManager
             this.adapter = homeAdapter
             this.addItemDecoration(
-                RecyclerViewItemOffset(setItemOffset(topPx = convertDpToPx(65F, resources)))
+                RecyclerViewItemDecoration(setItemOffset(topPx = convertDpToPx(65F, resources)))
             )
         }
     }

@@ -59,24 +59,6 @@ class MovieDetailCreditsView(
     }
 
     fun setCrews(list: List<Crew>) {
-//        val directors = list.filter {
-//            it.department == "Directing" && it.job == "Director"
-//        }.map {
-//            it.name
-//        }.let {
-//            val str = it.toString()
-//            str.substring(1, str.length - 1)
-//        }
-
-//        val writers = list.filter {
-//            it.department == "Writing"
-//        }.map {
-//            it.name
-//        }.let {
-//            val str = it.toString()
-//            str.substring(1, str.length - 1)
-//        }
-
         binding.tvDirector.text = list.filter {
             it.department == "Directing" && it.job == "Director"
         }.map {

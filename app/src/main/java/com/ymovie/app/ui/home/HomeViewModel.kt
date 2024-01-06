@@ -1,40 +1,44 @@
 package com.ymovie.app.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.NetworkResponse
-import com.ymovie.app.data.model.movie.MovieList
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import com.ymovie.app.data.model.HomeRequestParam
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var _homeDataLiveData: MutableLiveData<ArrayList<NetworkResponse<MovieList>>> = MutableLiveData()
-    val homeDataLiveData: LiveData<ArrayList<NetworkResponse<MovieList>>> get() = _homeDataLiveData
+    private var homeRequestParam = MutableStateFlow(HomeRequestParam())
 
-    fun fetchHomeData(language: String, page: Int, region: String) {
-        viewModelScope.launch {
-            val job1 = async {
-                movieRepository.fetchNowPlayingMovies(language, page, region)
+    val homeData: StateFlow<HomeUiState> = homeRequestParam.flatMapLatest { param ->
+        flowOf(
+            movieRepository.fetchNowPlayingMovies(param.language, param.page, param.region),
+            movieRepository.fetchPopularMovies(param.language, param.page, param.region),
+            movieRepository.fetchTopRatedMovies(param.language, param.page, param.region),
+            movieRepository.fetchUpcomingMovies(param.language, param.page, param.region)
+        ).flatMapConcat {
+            it.catch { e ->
+                HomeUiState.Failure(Exception(e))
+            }.map { data ->
+                HomeUiState.Success(data)
             }
-
-            val job2 = async {
-                movieRepository.fetchPopularMovies(language, page, region)
-            }
-
-            val job3 = async {
-                movieRepository.fetchTopRatedMovies(language, page, region)
-            }
-
-            val job4 = async {
-                movieRepository.fetchUpcomingMovies(language, page, region)
-            }
-
-            _homeDataLiveData.value = arrayListOf(job1.await(), job2.await(), job3.await(), job4.await())
         }
+    }.stateIn(
+        scope = viewModelScope,
+        started = WhileSubscribed(5000),
+        initialValue = HomeUiState.Loading
+    )
+
+    fun setHomeRequestParam(param: HomeRequestParam) {
+        homeRequestParam.value = param
     }
 }
 

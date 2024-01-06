@@ -6,57 +6,38 @@ import com.ymovie.app.data.model.movie.MovieList
 import com.ymovie.app.data.source.RemoteMovieDataSource
 import com.ymovie.app.ui.home.HomeViewType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class MovieRepository(private val remoteMovieDataSource: RemoteMovieDataSource) {
-    suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): NetworkResponse<MovieList> {
-        return try {
-            val networkResponse = remoteMovieDataSource.fetchNowPlayingMovies(language, page, region).apply {
-                this.header = ""
-                this.viewType = HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal
-            }
-
-            NetworkResponse.Success(networkResponse)
-        } catch (e: Exception) {
-            NetworkResponse.Failure(e)
+    suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return remoteMovieDataSource.fetchNowPlayingMovies(language, page, region).map {
+            it.header = ""
+            it.viewType = HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal
+            it
         }
     }
 
-    suspend fun fetchPopularMovies(language: String, page: Int, region: String): NetworkResponse<MovieList> {
-        return try {
-            val networkResponse = remoteMovieDataSource.fetchPopularMovies(language, page, region).apply {
-                this.header = "Popular"
-                this.viewType = HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
-            }
-
-            NetworkResponse.Success(networkResponse)
-        } catch (e: Exception) {
-            NetworkResponse.Failure(e)
+    suspend fun fetchPopularMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return remoteMovieDataSource.fetchPopularMovies(language, page, region).map {
+            it.header = "Popular"
+            it.viewType = HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
+            it
         }
     }
 
-    suspend fun fetchTopRatedMovies(language: String, page: Int, region: String): NetworkResponse<MovieList> {
-        return try {
-            val networkResponse = remoteMovieDataSource.fetchTopRatedMovies(language, page, region).apply {
-                this.header = "Top Rated"
-                this.viewType = HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
-            }
-
-            NetworkResponse.Success(networkResponse)
-        } catch (e: Exception) {
-            NetworkResponse.Failure(e)
+    suspend fun fetchTopRatedMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return remoteMovieDataSource.fetchTopRatedMovies(language, page, region).map {
+            it.header = "Top Rated"
+            it.viewType = HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
+            it
         }
     }
 
-    suspend fun fetchUpcomingMovies(language: String, page: Int, region: String): NetworkResponse<MovieList> {
-        return try {
-            val networkResponse = remoteMovieDataSource.fetchUpcomingMovies(language, page, region).apply {
-                this.header = "Upcoming"
-                this.viewType = HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
-            }
-
-            NetworkResponse.Success(networkResponse)
-        } catch (e: Exception) {
-            NetworkResponse.Failure(e)
+    suspend fun fetchUpcomingMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return remoteMovieDataSource.fetchUpcomingMovies(language, page, region).map {
+            it.header = "Upcoming"
+            it.viewType = HomeViewType.MOVIE_LIST_HORIZONTAL.ordinal
+            it
         }
     }
 

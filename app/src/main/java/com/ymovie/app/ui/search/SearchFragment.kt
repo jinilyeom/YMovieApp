@@ -1,6 +1,5 @@
 package com.ymovie.app.ui.search
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
+import com.ymovie.app.util.setItemOffset
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
@@ -68,9 +68,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        val bottomPx = convertDpToPx(20F, resources)
-        val rect = Rect(0, 0, 0, bottomPx)
-
         searchAdapter = SearchAdapter(requireActivity(), ArrayList())
         searchLinearLayoutManager = LinearLayoutManager(requireActivity()).apply {
             this.orientation = LinearLayoutManager.VERTICAL
@@ -79,7 +76,9 @@ class SearchFragment : Fragment() {
         binding.rvSearchResult.let {
             it.layoutManager = searchLinearLayoutManager
             it.adapter = searchAdapter
-            it.addItemDecoration(RecyclerViewItemOffset(rect))
+            it.addItemDecoration(
+                RecyclerViewItemOffset(setItemOffset(topPx = convertDpToPx(20F, resources)))
+            )
             it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)

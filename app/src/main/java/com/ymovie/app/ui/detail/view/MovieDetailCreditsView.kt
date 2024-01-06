@@ -1,7 +1,6 @@
 package com.ymovie.app.ui.detail.view
 
 import android.content.Context
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,6 +12,7 @@ import com.ymovie.app.databinding.ViewMovieDetailCreditsBinding
 import com.ymovie.app.ui.detail.adapter.MovieCastsAdapter
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
+import com.ymovie.app.util.setItemOffset
 
 class MovieDetailCreditsView(
     private val context: Context,
@@ -45,13 +45,9 @@ class MovieDetailCreditsView(
             }
             it.adapter = movieCastsAdapter
             it.addItemDecoration(
-                RecyclerViewItemOffset(offSetItem(rightPx = convertDpToPx(16F, resources)))
+                RecyclerViewItemOffset(setItemOffset(leftPx = convertDpToPx(16F, resources)))
             )
         }
-    }
-
-    private fun offSetItem(leftPx: Int = 0, topPx: Int = 0, rightPx: Int = 0, bottomPx: Int = 0): Rect {
-        return Rect(leftPx, topPx, rightPx, bottomPx)
     }
 
     fun setHeaderText(headerText: String) {

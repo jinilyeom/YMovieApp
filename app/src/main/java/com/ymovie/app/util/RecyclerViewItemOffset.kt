@@ -8,7 +8,7 @@ class RecyclerViewItemOffset(private val offset: Rect) : RecyclerView.ItemDecora
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
 
-        if (parent.getChildAdapterPosition(view) == state.itemCount - 1) {
+        if (parent.getChildAdapterPosition(view) == FIRST_ITEM_POSITION) {
             return
         }
 
@@ -18,5 +18,9 @@ class RecyclerViewItemOffset(private val offset: Rect) : RecyclerView.ItemDecora
             this.left = offset.left
             this.right = offset.right
         }
+    }
+
+    companion object {
+        const val FIRST_ITEM_POSITION = 0
     }
 }

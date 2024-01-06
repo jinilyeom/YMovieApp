@@ -1,7 +1,6 @@
 package com.ymovie.app.ui.home.viewholder
 
 import android.content.Context
-import android.graphics.Rect
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.model.movie.Movie
@@ -10,6 +9,7 @@ import com.ymovie.app.databinding.ItemHomeTypeListBinding
 import com.ymovie.app.ui.home.adapter.HomeMovieListAdapter
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
+import com.ymovie.app.util.setItemOffset
 
 class HomeListViewHolder(
     private val binding: ItemHomeTypeListBinding
@@ -18,9 +18,6 @@ class HomeListViewHolder(
     fun bind(context: Context, list: MovieList) {
         binding.tvHeader.text = list.header
 
-        val rightPx = convertDpToPx(16F, context.resources)
-        val rect = Rect(0, 0, rightPx, 0)
-
         val linearLayoutManager = LinearLayoutManager(context).apply {
             this.orientation = LinearLayoutManager.HORIZONTAL
         }
@@ -28,7 +25,9 @@ class HomeListViewHolder(
         binding.rvMovies.apply {
             this.layoutManager = linearLayoutManager
             this.adapter = HomeMovieListAdapter(context, list.movies as MutableList<Movie>)
-            this.addItemDecoration(RecyclerViewItemOffset(rect))
+            this.addItemDecoration(
+                RecyclerViewItemOffset(setItemOffset(leftPx = convertDpToPx(16F, context.resources)))
+            )
         }
     }
 }

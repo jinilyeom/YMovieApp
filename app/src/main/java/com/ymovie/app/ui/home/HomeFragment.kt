@@ -1,6 +1,5 @@
 package com.ymovie.app.ui.home
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.ui.home.adapter.HomeAdapter
 import com.ymovie.app.util.RecyclerViewItemOffset
 import com.ymovie.app.util.convertDpToPx
+import com.ymovie.app.util.setItemOffset
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -60,9 +60,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        val bottomPx = convertDpToPx(65F, resources)
-        val rect = Rect(0, 0, 0, bottomPx)
-
         homeAdapter = HomeAdapter(requireActivity(), ArrayList())
         linearLayoutManager = LinearLayoutManager(requireActivity()).apply {
             this.orientation = LinearLayoutManager.VERTICAL
@@ -71,7 +68,9 @@ class HomeFragment : Fragment() {
         binding.rvHome.apply {
             this.layoutManager = linearLayoutManager
             this.adapter = homeAdapter
-            this.addItemDecoration(RecyclerViewItemOffset(rect))
+            this.addItemDecoration(
+                RecyclerViewItemOffset(setItemOffset(topPx = convertDpToPx(65F, resources)))
+            )
         }
     }
 

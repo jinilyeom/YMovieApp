@@ -134,7 +134,7 @@ class SearchFragment : Fragment() {
 
     private fun resultSearchMovie() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 searchViewModel.searchMovie.collect { response ->
                     when (response) {
                         is SearchUiState.Loading -> {

@@ -3,6 +3,8 @@ package com.ymovie.app.ui.home.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.ymovie.app.data.model.movie.MovieList
@@ -11,24 +13,31 @@ import com.ymovie.app.databinding.ItemHomeTypePagerBinding
 import com.ymovie.app.ui.home.HomeViewType
 import com.ymovie.app.ui.home.viewholder.HomePagerViewHolder
 import com.ymovie.app.ui.home.viewholder.HomeListViewHolder
+import com.ymovie.app.util.RecyclerViewItemDecoration
+import com.ymovie.app.util.convertDpToPx
+import com.ymovie.app.util.setItemOffset
 
 class HomeAdapter(
     private val context: Context,
     private var homeData: MutableList<MovieList>
 ) : RecyclerView.Adapter<ViewHolder>() {
+    private lateinit var homeMoviePagerAdapter: HomeMoviePagerAdapter
+    private lateinit var homeMovieListAdapter: HomeMovieListAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
             HomeViewType.MOVIE_PAGER_HORIZONTAL.ordinal -> {
-                HomePagerViewHolder(
-                    ItemHomeTypePagerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                )
+                val binding = ItemHomeTypePagerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+                initPagerLayout(binding)
+                HomePagerViewHolder(binding, homeMoviePagerAdapter)
             }
 
             else -> {
-                HomeListViewHolder(
-                    ItemHomeTypeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                )
+                val binding = ItemHomeTypeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+                initListLayout(binding)
+                HomeListViewHolder(binding, homeMovieListAdapter)
             }
         }
     }
@@ -51,6 +60,37 @@ class HomeAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return homeData[position].viewType
+    }
+
+    private fun initPagerLayout(binding: ItemHomeTypePagerBinding) {
+        val linearLayoutManager = LinearLayoutManager(context).apply {
+            this.orientation = LinearLayoutManager.HORIZONTAL
+        }
+
+        homeMoviePagerAdapter = HomeMoviePagerAdapter(context, ArrayList())
+
+        binding.viewPager.let {
+            it.layoutManager = linearLayoutManager
+            it.adapter = homeMoviePagerAdapter
+        }
+
+        PagerSnapHelper().attachToRecyclerView(binding.viewPager)
+    }
+
+    private fun initListLayout(binding: ItemHomeTypeListBinding) {
+        val linearLayoutManager = LinearLayoutManager(context).apply {
+            this.orientation = LinearLayoutManager.HORIZONTAL
+        }
+
+        homeMovieListAdapter = HomeMovieListAdapter(context, ArrayList())
+
+        binding.rvMovies.let {
+            it.layoutManager = linearLayoutManager
+            it.adapter = homeMovieListAdapter
+            it.addItemDecoration(
+                RecyclerViewItemDecoration(setItemOffset(leftPx = convertDpToPx(16F, context.resources)))
+            )
+        }
     }
 
     fun addItemToList(list: MovieList) {

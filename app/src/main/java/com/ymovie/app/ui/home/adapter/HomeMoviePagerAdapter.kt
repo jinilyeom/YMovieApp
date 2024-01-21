@@ -26,4 +26,14 @@ class HomeMoviePagerAdapter(
     override fun getItemCount(): Int {
         return movies.size
     }
+
+    fun setItemToList(list: List<Movie>) {
+        movies.let {
+            if (it.isEmpty()) it.clear()
+
+            it.addAll(list)
+        }
+
+        notifyItemInserted(0)
+    }
 }

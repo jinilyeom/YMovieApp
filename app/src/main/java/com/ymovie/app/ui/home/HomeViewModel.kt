@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
 import com.ymovie.app.data.model.HomeRequestParam
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
@@ -33,7 +33,7 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         }
     }.stateIn(
         scope = viewModelScope,
-        started = WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(0, 0),
         initialValue = HomeUiState.Loading
     )
 

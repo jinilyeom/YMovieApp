@@ -29,11 +29,11 @@ class HomeMovieListAdapter(
 
     fun setItemToList(list: List<Movie>) {
         movies.let {
-            if (it.isEmpty()) it.clear()
+            if (it.isNotEmpty()) it.clear()
 
             it.addAll(list)
         }
 
-        notifyItemInserted(0)
+        notifyDataSetChanged()
     }
 }

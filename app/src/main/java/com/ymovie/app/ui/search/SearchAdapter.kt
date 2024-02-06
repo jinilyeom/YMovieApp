@@ -35,11 +35,11 @@ class SearchAdapter(
         }
     }
 
-    fun clearList() {
-        if (movies.isEmpty()) {
-            return
-        }
+    fun clearItemFromList() {
+        movies.let {
+            if (it.isEmpty()) return@let
 
-        movies.clear()
+            it.clear()
+        }
     }
 }

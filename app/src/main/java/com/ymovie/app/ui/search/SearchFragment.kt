@@ -106,7 +106,7 @@ class SearchFragment : Fragment() {
                 when (actionId) {
                     IME_ACTION_SEARCH -> {
                         currentPage = DEFAULT_PAGE
-                        searchAdapter.clearList()
+                        searchAdapter.clearItemFromList()
 
                         searchViewModel.setSearchRequestParam(
                             SearchRequestParam(

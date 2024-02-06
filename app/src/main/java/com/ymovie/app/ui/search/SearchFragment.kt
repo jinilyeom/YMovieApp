@@ -49,13 +49,6 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchViewModel.setSearchRequestParam(
-            SearchRequestParam(
-                query = binding.searchView.text.toString(),
-                page = currentPage
-            )
-        )
-
         initAdapter()
         initSearchView()
         resultSearchMovie()

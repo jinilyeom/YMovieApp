@@ -88,7 +88,7 @@ class HomeFragment : Fragment() {
                         }
 
                         is HomeUiState.Failure -> {
-                            homeAdapter.addItemToList(MovieList())
+
                         }
                     }
                 }

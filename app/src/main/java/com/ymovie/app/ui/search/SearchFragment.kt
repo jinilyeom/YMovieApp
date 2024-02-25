@@ -144,7 +144,7 @@ class SearchFragment : Fragment() {
                         }
 
                         is SearchUiState.Failure -> {
-                            searchAdapter.addItemToList(emptyList())
+
                         }
                     }
                 }

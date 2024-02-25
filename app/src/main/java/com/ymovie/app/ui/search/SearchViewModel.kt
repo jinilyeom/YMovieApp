@@ -43,8 +43,7 @@ class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel(
     }
 }
 
-class SearchViewModelFactory(private val movieRepository: MovieRepository) :
-    ViewModelProvider.Factory {
+class SearchViewModelFactory(private val movieRepository: MovieRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return SearchViewModel(movieRepository) as T

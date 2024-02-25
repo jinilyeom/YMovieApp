@@ -33,7 +33,7 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(0, 0),
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = HomeUiState.Loading
     )
 

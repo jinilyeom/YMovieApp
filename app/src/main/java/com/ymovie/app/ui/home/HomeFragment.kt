@@ -53,12 +53,6 @@ class HomeFragment : Fragment() {
         homeViewModel.setHomeRequestParam(HomeRequestParam(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION))
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        homeAdapter.removeItemFromList()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
@@ -82,7 +76,7 @@ class HomeFragment : Fragment() {
 
     private fun resultHomeData() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 homeViewModel.homeData.collect { response ->
                     when (response) {
                         is HomeUiState.Loading -> {

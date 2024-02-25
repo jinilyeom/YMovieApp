@@ -100,10 +100,4 @@ class HomeAdapter(
 
         notifyItemInserted(position)
     }
-
-    fun removeItemFromList() {
-        homeData.clear()
-
-        notifyDataSetChanged()
-    }
 }

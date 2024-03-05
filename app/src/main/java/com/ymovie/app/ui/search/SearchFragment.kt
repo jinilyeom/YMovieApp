@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ymovie.app.data.MovieRepository
 import com.ymovie.app.data.model.SearchRequestParam
-import com.ymovie.app.data.source.RemoteMovieDataSource
+import com.ymovie.app.data.source.MovieRemoteDataSource
 import com.ymovie.app.databinding.FragmentSearchBinding
 import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
@@ -29,7 +29,7 @@ class SearchFragment : Fragment() {
 
     private val searchViewModel: SearchViewModel by lazy {
         val repository = MovieRepository(
-            RemoteMovieDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+            MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
         )
         ViewModelProvider(this@SearchFragment, SearchViewModelFactory(repository))[SearchViewModel::class.java]
     }

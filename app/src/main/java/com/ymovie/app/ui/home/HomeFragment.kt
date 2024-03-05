@@ -12,8 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ymovie.app.data.MovieRepository
 import com.ymovie.app.data.model.HomeRequestParam
-import com.ymovie.app.data.model.movie.MovieList
-import com.ymovie.app.data.source.RemoteMovieDataSource
+import com.ymovie.app.data.source.MovieRemoteDataSource
 import com.ymovie.app.databinding.FragmentHomeBinding
 import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
@@ -43,7 +42,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val repository = MovieRepository(
-            RemoteMovieDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+            MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
         )
         homeViewModel = ViewModelProvider(this@HomeFragment, HomeViewModelFactory(repository))[HomeViewModel::class.java]
 

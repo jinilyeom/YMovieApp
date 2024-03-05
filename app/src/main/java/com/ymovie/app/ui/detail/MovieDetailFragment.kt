@@ -12,7 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.ymovie.app.R
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.source.RemoteMovieDataSource
+import com.ymovie.app.data.source.MovieRemoteDataSource
 import com.ymovie.app.databinding.FragmentMovieDetailBinding
 import com.ymovie.app.network.NetworkConstants
 import com.ymovie.app.network.RetrofitApiClient
@@ -27,7 +27,7 @@ class MovieDetailFragment : Fragment() {
 
     private val movieDetailViewModel: MovieDetailViewModel by lazy {
         val repository = MovieRepository(
-            RemoteMovieDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+            MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
         )
         ViewModelProvider(this@MovieDetailFragment, MovieDetailViewModelFactory(repository))[MovieDetailViewModel::class.java]
     }

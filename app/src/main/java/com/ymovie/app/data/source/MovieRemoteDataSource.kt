@@ -7,7 +7,7 @@ import com.ymovie.app.network.service.MovieService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class RemoteMovieDataSource(private val service: MovieService) {
+class MovieRemoteDataSource(private val service: MovieService) {
     suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): Flow<MovieList> = flow {
         emit(service.fetchNowPlayingMovies(language, page, region))
     }

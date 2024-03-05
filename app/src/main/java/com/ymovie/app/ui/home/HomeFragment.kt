@@ -26,7 +26,12 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var homeViewModel: HomeViewModel
+    private val homeViewModel: HomeViewModel by lazy {
+        val repository = MovieRepository(
+            MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+        )
+        ViewModelProvider(this@HomeFragment, HomeViewModelFactory(repository))[HomeViewModel::class.java]
+    }
     private lateinit var homeAdapter: HomeAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
@@ -40,11 +45,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val repository = MovieRepository(
-            MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
-        )
-        homeViewModel = ViewModelProvider(this@HomeFragment, HomeViewModelFactory(repository))[HomeViewModel::class.java]
 
         initAdapter()
         resultHomeData()

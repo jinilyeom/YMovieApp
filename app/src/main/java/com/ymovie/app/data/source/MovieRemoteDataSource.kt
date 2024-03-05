@@ -32,21 +32,15 @@ class MovieRemoteDataSource(private val service: MovieService) {
         page: Int,
         region: String,
         year: String
-    ): Flow<MovieList> {
-        return flow {
-            emit(service.searchMovie(query, includeAdult, language, primaryReleaseYear, page, region, year))
-        }
+    ): Flow<MovieList> = flow {
+        emit(service.searchMovie(query, includeAdult, language, primaryReleaseYear, page, region, year))
     }
 
-    suspend fun fetchMovieDetails(movieId: Int): Flow<MovieDetail> {
-        return flow {
-            emit(service.fetchMovieDetails(movieId))
-        }
+    suspend fun fetchMovieDetails(movieId: Int): Flow<MovieDetail> = flow {
+        emit(service.fetchMovieDetails(movieId))
     }
 
-    suspend fun fetchCredits(movieId: Int): Flow<Credit> {
-        return flow {
-            emit(service.fetchCredits(movieId))
-        }
+    suspend fun fetchCredits(movieId: Int): Flow<Credit> = flow {
+        emit(service.fetchCredits(movieId))
     }
 }

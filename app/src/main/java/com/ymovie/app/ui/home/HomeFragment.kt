@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initAdapter()
-        resultHomeData()
+        collectHomeData()
 
         homeViewModel.setHomeRequestParam(HomeRequestParam(DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION))
     }
@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun resultHomeData() {
+    private fun collectHomeData() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 homeViewModel.homeData.collect { response ->

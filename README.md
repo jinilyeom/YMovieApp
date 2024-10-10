@@ -1,8 +1,12 @@
 # YMovie
 This is an simple movie app for android.
-Trying to understand android architecture basic.
-I started project with Java, but I am gonna convert to Kotlin and Jetpack Compose later.
+Trying to understand android architecture basic and how to use modern android development skills.
+I am gonna convert to Kotlin and Jetpack Compose later.
 I hope someones helpful this project.
+
+## Screenshots
+| ![Screenshot1](screenshots/screenshot-1-home.png) | ![Screenshot2](screenshots/screenshot-2-detail.png) | ![Screenshot3](screenshots/screenshot-3-search.png) |
+|---------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------|
 
 ## Architecture
 YMovie references the [official architecture guidance](https://developer.android.com/topic/architecture).
@@ -20,6 +24,8 @@ TMDB_ACCESS_TOKEN_AUTH = "Your API key"
 * Android Architecture Components
     * LiveData
     * ViewModel
+* Coroutines
+* Flow
 * Retrofit
 * Gson
 * Glide

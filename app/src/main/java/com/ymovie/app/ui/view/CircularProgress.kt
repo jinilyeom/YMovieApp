@@ -61,7 +61,7 @@ class CircularProgress(context: Context, attr: AttributeSet) : View(context, att
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         canvas?.let {

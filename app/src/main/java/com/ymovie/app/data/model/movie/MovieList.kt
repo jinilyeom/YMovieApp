@@ -7,7 +7,6 @@ const val DEFAULT_PAGE = 1
 const val DEFAULT_TOTAL_PAGE = 1
 const val DEFAULT_TOTAL_RESULT = 0
 const val DEFAULT_HEADER = ""
-const val DEFAULT_VIEW_TYPE = 1
 
 data class MovieList(
     @SerializedName("page")
@@ -22,6 +21,5 @@ data class MovieList(
     @SerializedName("total_results")
     @Expose
     var totalResult: Int = DEFAULT_TOTAL_RESULT,
-    var header: String = DEFAULT_HEADER,
-    var viewType: Int = DEFAULT_VIEW_TYPE
+    var header: String = DEFAULT_HEADER
 )

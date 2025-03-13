@@ -116,7 +116,7 @@ fun HomeHorizontalPager(
     }
 
     HorizontalPager(state = pagerState, pageSize = PageSize.Fill) { page ->
-        Card(shape = RoundedCornerShape(0.dp), colors = CardDefaults.cardColors(containerColor = Color.Gray)) {
+        Card(shape = RoundedCornerShape(0.dp)) {
             AsyncImage(
                 model = NetworkConstants.IMAGE_BASE_URL_W500 + movies[page].backdropPath,
                 contentDescription = null,

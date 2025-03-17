@@ -26,6 +26,9 @@ import com.ymovie.app.network.service.MovieService
 import com.ymovie.app.ui.home.HomeScreen
 import com.ymovie.app.ui.home.HomeViewModel
 import com.ymovie.app.ui.home.HomeViewModelFactory
+import com.ymovie.app.ui.search.SearchScreen
+import com.ymovie.app.ui.search.SearchViewModel
+import com.ymovie.app.ui.search.SearchViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +81,12 @@ fun YMovieApp() {
                 HomeScreen(homeViewModel)
             }
             composable(route = navRoutes[1].route) {
-                // Search
+                val repository = MovieRepository(
+                    MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+                )
+                val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModelFactory(repository))
+
+                SearchScreen(searchViewModel)
             }
         }
     }

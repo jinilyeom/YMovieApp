@@ -108,7 +108,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
 }
 
 @Composable
-fun HomeHorizontalPager(
+private fun HomeHorizontalPager(
     movies: List<Movie>,
 ) {
     val pagerState = rememberPagerState {
@@ -152,7 +152,7 @@ fun HomeHorizontalPager(
 }
 
 @Composable
-fun HomeHorizontalList(
+private fun HomeHorizontalList(
     headerText: String, movies: List<Movie>
 ) {
     Box(

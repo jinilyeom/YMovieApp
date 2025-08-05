@@ -8,10 +8,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.ymovie.app.data.MovieRepository
 import com.ymovie.app.data.source.MovieRemoteDataSource
 import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
+import com.ymovie.app.ui.detail.MovieDetailNavigation
+import com.ymovie.app.ui.detail.MovieDetailScreen
+import com.ymovie.app.ui.detail.MovieDetailViewModel
+import com.ymovie.app.ui.detail.MovieDetailViewModelFactory
 import com.ymovie.app.ui.home.HomeScreen
 import com.ymovie.app.ui.home.HomeViewModel
 import com.ymovie.app.ui.home.HomeViewModelFactory
@@ -45,6 +50,21 @@ fun YMovieNavHost(
             val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModelFactory(repository))
 
             SearchScreen(searchViewModel)
+        }
+        composable<MovieDetailNavigation> { backStackEntry ->
+            val movieDetailNavigation: MovieDetailNavigation = backStackEntry.toRoute()
+            val repository = MovieRepository(
+                MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
+            )
+            val movieDetailViewModel: MovieDetailViewModel = viewModel(factory = MovieDetailViewModelFactory(repository))
+            movieDetailViewModel.setMovieId(movieDetailNavigation.movieId)
+
+            MovieDetailScreen(
+                movieDetailViewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

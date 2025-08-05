@@ -1,6 +1,5 @@
 package com.ymovie.app.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -10,25 +9,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ymovie.app.R
-import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.source.MovieRemoteDataSource
-import com.ymovie.app.network.RetrofitApiClient
-import com.ymovie.app.network.service.MovieService
-import com.ymovie.app.ui.home.HomeScreen
-import com.ymovie.app.ui.home.HomeViewModel
-import com.ymovie.app.ui.home.HomeViewModelFactory
-import com.ymovie.app.ui.search.SearchScreen
-import com.ymovie.app.ui.search.SearchViewModel
-import com.ymovie.app.ui.search.SearchViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,33 +52,12 @@ fun YMovieApp() {
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = navRoutes[0].route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(route = navRoutes[0].route) {
-                val repository = MovieRepository(
-                    MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
-                )
-                val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
-
-                HomeScreen(homeViewModel)
-            }
-            composable(route = navRoutes[1].route) {
-                val repository = MovieRepository(
-                    MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
-                )
-                val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModelFactory(repository))
-
-                SearchScreen(searchViewModel)
-            }
-        }
+        YMovieNavHost(navController, navRoutes, innerPadding)
     }
 }
 
 sealed class NavigationRoute(
-    val name: String, val route: String, val iconId: Int
+    val name: String, val route: String, var iconId: Int
 ) {
     data object Home : NavigationRoute("Home", "Home", R.drawable.ic_navigation_home_24)
     data object Search : NavigationRoute("Search", "Search", R.drawable.ic_navigation_search_24)

@@ -1,6 +1,7 @@
 package com.ymovie.app.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,13 +19,11 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,7 +38,10 @@ import com.ymovie.app.network.NetworkConstants
 private const val TAG = "HomeScreen"
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel) {
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+    onItemClick: (Int) -> Unit
+) {
     val nowPlayingMoviesUiState by homeViewModel.nowPlayingMoviesUiState.collectAsStateWithLifecycle()
     val popularMoviesUiState by homeViewModel.popularMoviesUiState.collectAsStateWithLifecycle()
     val topRatedMoviesUiState by homeViewModel.topRatedMoviesUiState.collectAsStateWithLifecycle()
@@ -51,7 +53,8 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 is HomeUiState.Loading -> {}
                 is HomeUiState.Success -> {
                     HomeHorizontalPager(
-                        (nowPlayingMoviesUiState as HomeUiState.Success).data.movies ?: emptyList()
+                        (nowPlayingMoviesUiState as HomeUiState.Success).data.movies ?: emptyList(),
+                        onItemClick
                     )
                 }
                 is HomeUiState.Failure -> {
@@ -66,7 +69,8 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 is HomeUiState.Success -> {
                     HomeHorizontalList(
                         (popularMoviesUiState as HomeUiState.Success).data.header,
-                        (popularMoviesUiState as HomeUiState.Success).data.movies ?: emptyList()
+                        (popularMoviesUiState as HomeUiState.Success).data.movies ?: emptyList(),
+                        onItemClick
                     )
                 }
                 is HomeUiState.Failure -> {
@@ -81,7 +85,8 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 is HomeUiState.Success -> {
                     HomeHorizontalList(
                         (topRatedMoviesUiState as HomeUiState.Success).data.header,
-                        (topRatedMoviesUiState as HomeUiState.Success).data.movies ?: emptyList()
+                        (topRatedMoviesUiState as HomeUiState.Success).data.movies ?: emptyList(),
+                        onItemClick
                     )
                 }
                 is HomeUiState.Failure -> {
@@ -96,7 +101,8 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 is HomeUiState.Success -> {
                     HomeHorizontalList(
                         (upcomingMoviesUiState as HomeUiState.Success).data.header,
-                        (upcomingMoviesUiState as HomeUiState.Success).data.movies ?: emptyList()
+                        (upcomingMoviesUiState as HomeUiState.Success).data.movies ?: emptyList(),
+                        onItemClick
                     )
                 }
                 is HomeUiState.Failure -> {
@@ -110,13 +116,19 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
 @Composable
 private fun HomeHorizontalPager(
     movies: List<Movie>,
+    onItemClick: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState {
         movies.size
     }
 
     HorizontalPager(state = pagerState, pageSize = PageSize.Fill) { page ->
-        Card(shape = RoundedCornerShape(0.dp)) {
+        Card(
+            shape = RoundedCornerShape(0.dp),
+            modifier = Modifier.clickable {
+                onItemClick(movies[page].id)
+            }
+        ) {
             AsyncImage(
                 model = NetworkConstants.IMAGE_BASE_URL_W500 + movies[page].backdropPath,
                 contentDescription = null,
@@ -153,7 +165,8 @@ private fun HomeHorizontalPager(
 
 @Composable
 private fun HomeHorizontalList(
-    headerText: String, movies: List<Movie>
+    headerText: String, movies: List<Movie>,
+    onItemClick: (Int) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.CenterStart,
@@ -173,7 +186,11 @@ private fun HomeHorizontalList(
         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
     ) {
         items(movies.size) { index ->
-            Card(modifier = Modifier.width(150.dp)) {
+            Card(
+                modifier = Modifier
+                    .width(150.dp)
+                    .clickable { onItemClick(movies[index].id) }
+            ) {
                 AsyncImage(
                     model = NetworkConstants.IMAGE_BASE_URL_W200 + movies[index].posterPath,
                     contentDescription = null,

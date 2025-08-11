@@ -41,7 +41,14 @@ fun YMovieNavHost(
             )
             val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
 
-            HomeScreen(homeViewModel)
+            HomeScreen(
+                homeViewModel,
+                onItemClick = { movieId ->
+                    navController.navigate(MovieDetailNavigation(movieId)) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
         composable(route = navRoutes[1].route) {
             val repository = MovieRepository(

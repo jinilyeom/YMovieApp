@@ -56,7 +56,14 @@ fun YMovieNavHost(
             )
             val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModelFactory(repository))
 
-            SearchScreen(searchViewModel)
+            SearchScreen(
+                searchViewModel,
+                onItemClick = { movieId ->
+                    navController.navigate(MovieDetailNavigation(movieId)) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
         composable<MovieDetailNavigation> { backStackEntry ->
             val movieDetailNavigation: MovieDetailNavigation = backStackEntry.toRoute()

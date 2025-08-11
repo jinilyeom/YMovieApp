@@ -1,6 +1,7 @@
 package com.ymovie.app.ui.search
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -53,7 +54,7 @@ private const val TAG = "SearchScreen"
 private const val DEFAULT_PAGE = 1
 
 @Composable
-fun SearchScreen(searchViewModel: SearchViewModel) {
+fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
     val searchResultMovies by searchViewModel.searchResultMovies.collectAsStateWithLifecycle()
     val searchResultUiState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
@@ -87,10 +88,11 @@ fun SearchScreen(searchViewModel: SearchViewModel) {
                     searchResultMovies,
                     (searchResultUiState as SearchUiState.Success).data.page,
                     (searchResultUiState as SearchUiState.Success).data.totalPage,
+                    modifier,
                     onSearchRequestParamChanged = {
                         searchViewModel.setSearchRequestParam(it)
                     },
-                    modifier
+                    onItemClick
                 )
             }
             is SearchUiState.Failure -> {
@@ -146,8 +148,9 @@ private fun SearchResultList(
     searchResultMovies: List<Movie>,
     page: Int,
     totalPage: Int,
+    modifier: Modifier,
     onSearchRequestParamChanged: (SearchRequestParam) -> Unit,
-    modifier: Modifier
+    onItemClick: (Int) -> Unit
 ) {
     val listState = rememberLazyListState()
     val isLoading by remember { derivedStateOf { listState.isLastVisibleItem() } }
@@ -166,14 +169,14 @@ private fun SearchResultList(
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         items(searchResultMovies.size) { index ->
-            SearchResultListItem(searchResultMovies[index], modifier)
+            SearchResultListItem(searchResultMovies[index], modifier, onItemClick)
         }
     }
 }
 
 @Composable
-private fun SearchResultListItem(movie: Movie, modifier: Modifier) {
-    Card(modifier = modifier) {
+private fun SearchResultListItem(movie: Movie, modifier: Modifier, onItemClick: (Int) -> Unit) {
+    Card(modifier = modifier.clickable { onItemClick(movie.id) }) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = NetworkConstants.IMAGE_BASE_URL_W200 + movie.posterPath,

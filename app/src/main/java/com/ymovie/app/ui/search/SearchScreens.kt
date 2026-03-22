@@ -59,15 +59,37 @@ fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
     val searchResultUiState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
 
-    val keyboardController = LocalSoftwareKeyboardController.current
     val modifier = Modifier
         .fillMaxWidth()
         .padding(start = 16.dp, end = 16.dp)
 
+    SearchScreen(
+        searchViewModel = searchViewModel,
+        searchResultMovies = searchResultMovies,
+        searchResultUiState = searchResultUiState,
+        searchQuery = searchQuery,
+        modifier = modifier,
+        onItemClick = onItemClick,
+        onSearchQueryChanged = { searchQuery = it }
+    )
+}
+
+@Composable
+private fun SearchScreen(
+    searchViewModel: SearchViewModel,
+    searchResultMovies: List<Movie>,
+    searchResultUiState: SearchUiState,
+    searchQuery: String,
+    modifier: Modifier,
+    onItemClick: (Int) -> Unit,
+    onSearchQueryChanged: (String) -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column {
         SearchBar(
             searchQuery,
-            onSearchQueryChanged = { searchQuery = it },
+            onSearchQueryChanged = { onSearchQueryChanged(it) },
             onSearchTriggered = {
                 searchViewModel.clearMovies()
                 searchViewModel.setSearchRequestParam(
@@ -81,13 +103,13 @@ fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
         when (searchResultUiState) {
             is SearchUiState.Loading -> {}
             is SearchUiState.Success -> {
-                searchViewModel.addMovies((searchResultUiState as SearchUiState.Success).data.movies ?: emptyList())
+                searchViewModel.addMovies(searchResultUiState.data.movies ?: emptyList())
 
                 SearchResultList(
                     searchQuery,
                     searchResultMovies,
-                    (searchResultUiState as SearchUiState.Success).data.page,
-                    (searchResultUiState as SearchUiState.Success).data.totalPage,
+                    searchResultUiState.data.page,
+                    searchResultUiState.data.totalPage,
                     modifier,
                     onSearchRequestParamChanged = {
                         searchViewModel.setSearchRequestParam(it)
@@ -96,7 +118,7 @@ fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
                 )
             }
             is SearchUiState.Failure -> {
-                Log.e(TAG, "${(searchResultUiState as SearchUiState.Failure).exception.message}")
+                Log.e(TAG, "${searchResultUiState.exception.message}")
             }
         }
     }

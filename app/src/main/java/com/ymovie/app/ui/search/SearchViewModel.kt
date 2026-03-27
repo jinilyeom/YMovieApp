@@ -6,20 +6,24 @@ import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
 import com.ymovie.app.data.model.SearchRequestParam
 import com.ymovie.app.data.model.movie.Movie
+import com.ymovie.app.data.model.movie.MovieList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 
 class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private val _searchResultMovies: MutableStateFlow<MutableList<Movie>> = MutableStateFlow(mutableListOf())
-    val searchResultMovies: StateFlow<List<Movie>>
-        get() = _searchResultMovies
-    private var searchRequestParam = MutableStateFlow(SearchRequestParam())
+    private var _searchRequestParam = MutableStateFlow(SearchRequestParam())
+    private val searchRequestParam: StateFlow<SearchRequestParam> = _searchRequestParam.asStateFlow()
+
+    private var _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val movies: MutableList<Movie> = mutableListOf()
 
     val searchUiState: StateFlow<SearchUiState> = searchRequestParam.flatMapLatest { param ->
         movieRepository.searchMovie(
@@ -35,7 +39,12 @@ class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel(
                 SearchUiState.Failure(Exception(e))
             }
             .map { data ->
-                SearchUiState.Success(data)
+                this.movies.addAll(data.movies ?: emptyList())
+                SearchUiState.Success(
+                    MovieList(
+                        data.page, this.movies, data.totalPage, data.totalResult
+                    )
+                )
             }
     }.stateIn(
         scope = viewModelScope,
@@ -44,21 +53,15 @@ class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel(
     )
 
     fun setSearchRequestParam(param: SearchRequestParam) {
-        searchRequestParam.value = param
+        _searchRequestParam.value = param
     }
 
-    fun addMovies(movies: List<Movie>) {
-        _searchResultMovies.update {
-            it.addAll(movies)
-            it
-        }
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
     }
 
     fun clearMovies() {
-        _searchResultMovies.update {
-            it.clear()
-            it
-        }
+        this.movies.clear()
     }
 }
 

@@ -30,9 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,9 +53,8 @@ private const val DEFAULT_PAGE = 1
 
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
-    val searchResultMovies by searchViewModel.searchResultMovies.collectAsStateWithLifecycle()
     val searchResultUiState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
-    var searchQuery by remember { mutableStateOf("") }
+    val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
 
     val modifier = Modifier
         .fillMaxWidth()
@@ -65,31 +62,29 @@ fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
 
     SearchScreen(
         searchViewModel = searchViewModel,
-        searchResultMovies = searchResultMovies,
         searchResultUiState = searchResultUiState,
         searchQuery = searchQuery,
         modifier = modifier,
-        onItemClick = onItemClick,
-        onSearchQueryChanged = { searchQuery = it }
+        onItemClick = onItemClick
     )
 }
 
 @Composable
 private fun SearchScreen(
     searchViewModel: SearchViewModel,
-    searchResultMovies: List<Movie>,
     searchResultUiState: SearchUiState,
     searchQuery: String,
     modifier: Modifier,
-    onItemClick: (Int) -> Unit,
-    onSearchQueryChanged: (String) -> Unit
+    onItemClick: (Int) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column {
         SearchBar(
             searchQuery,
-            onSearchQueryChanged = { onSearchQueryChanged(it) },
+            onSearchQueryChanged = {
+                searchViewModel.setSearchQuery(it)
+            },
             onSearchTriggered = {
                 searchViewModel.clearMovies()
                 searchViewModel.setSearchRequestParam(
@@ -103,11 +98,9 @@ private fun SearchScreen(
         when (searchResultUiState) {
             is SearchUiState.Loading -> {}
             is SearchUiState.Success -> {
-                searchViewModel.addMovies(searchResultUiState.data.movies ?: emptyList())
-
                 SearchResultList(
                     searchQuery,
-                    searchResultMovies,
+                    searchResultUiState.data.movies ?: emptyList(),
                     searchResultUiState.data.page,
                     searchResultUiState.data.totalPage,
                     modifier,
@@ -178,7 +171,7 @@ private fun SearchResultList(
     val isLoading by remember { derivedStateOf { listState.isLastVisibleItem() } }
 
     LaunchedEffect(isLoading) {
-        if (isLoading) {
+        if (isLoading && page <= totalPage) {
             onSearchRequestParamChanged(
                 SearchRequestParam(query = searchQuery, page = page + 1)
             )

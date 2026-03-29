@@ -55,6 +55,7 @@ private const val DEFAULT_PAGE = 1
 fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
     val searchResultUiState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
     val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
+    val searchRequestParam by searchViewModel.searchRequestParam.collectAsStateWithLifecycle()
 
     val modifier = Modifier
         .fillMaxWidth()
@@ -64,6 +65,7 @@ fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
         searchViewModel = searchViewModel,
         searchResultUiState = searchResultUiState,
         searchQuery = searchQuery,
+        searchRequestParam = searchRequestParam,
         modifier = modifier,
         onItemClick = onItemClick
     )
@@ -74,6 +76,7 @@ private fun SearchScreen(
     searchViewModel: SearchViewModel,
     searchResultUiState: SearchUiState,
     searchQuery: String,
+    searchRequestParam: SearchRequestParam,
     modifier: Modifier,
     onItemClick: (Int) -> Unit
 ) {
@@ -99,7 +102,7 @@ private fun SearchScreen(
             is SearchUiState.Loading -> {}
             is SearchUiState.Success -> {
                 SearchResultList(
-                    searchQuery,
+                    searchRequestParam.query,
                     searchResultUiState.data.movies ?: emptyList(),
                     searchResultUiState.data.page,
                     searchResultUiState.data.totalPage,

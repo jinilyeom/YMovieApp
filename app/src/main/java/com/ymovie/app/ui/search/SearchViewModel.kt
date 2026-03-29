@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 
 class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel() {
     private var _searchRequestParam = MutableStateFlow(SearchRequestParam())
-    private val searchRequestParam: StateFlow<SearchRequestParam> = _searchRequestParam.asStateFlow()
+    val searchRequestParam: StateFlow<SearchRequestParam> = _searchRequestParam.asStateFlow()
 
     private var _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()

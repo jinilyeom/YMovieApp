@@ -102,13 +102,14 @@ private fun SearchScreen(
             is SearchUiState.Loading -> {}
             is SearchUiState.Success -> {
                 SearchResultList(
-                    searchRequestParam.query,
                     searchResultUiState.data.movies ?: emptyList(),
-                    searchResultUiState.data.page,
-                    searchResultUiState.data.totalPage,
                     modifier,
-                    onSearchRequestParamChanged = {
-                        searchViewModel.setSearchRequestParam(it)
+                    onSearchRequestParamChanged = { isLoading ->
+                        if (isLoading && searchResultUiState.data.page <= searchResultUiState.data.totalPage) {
+                            searchViewModel.setSearchRequestParam(
+                                SearchRequestParam(query = searchRequestParam.query, page = searchResultUiState.data.page + 1)
+                            )
+                        }
                     },
                     onItemClick
                 )
@@ -162,23 +163,16 @@ private fun SearchBar(
 
 @Composable
 private fun SearchResultList(
-    searchQuery: String,
     searchResultMovies: List<Movie>,
-    page: Int,
-    totalPage: Int,
     modifier: Modifier,
-    onSearchRequestParamChanged: (SearchRequestParam) -> Unit,
+    onSearchRequestParamChanged: (Boolean) -> Unit,
     onItemClick: (Int) -> Unit
 ) {
     val listState = rememberLazyListState()
     val isLoading by remember { derivedStateOf { listState.isLastVisibleItem() } }
 
     LaunchedEffect(isLoading) {
-        if (isLoading && page <= totalPage) {
-            onSearchRequestParamChanged(
-                SearchRequestParam(query = searchQuery, page = page + 1)
-            )
-        }
+        onSearchRequestParamChanged(isLoading)
     }
 
     LazyColumn(

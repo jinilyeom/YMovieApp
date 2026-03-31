@@ -104,7 +104,7 @@ private fun SearchScreen(
                 SearchResultList(
                     searchResultUiState.data.movies ?: emptyList(),
                     modifier,
-                    onSearchRequestParamChanged = { isLoading ->
+                    onLoadMore = { isLoading ->
                         if (isLoading && searchResultUiState.data.page <= searchResultUiState.data.totalPage) {
                             searchViewModel.setSearchRequestParam(
                                 SearchRequestParam(query = searchRequestParam.query, page = searchResultUiState.data.page + 1)
@@ -165,14 +165,14 @@ private fun SearchBar(
 private fun SearchResultList(
     searchResultMovies: List<Movie>,
     modifier: Modifier,
-    onSearchRequestParamChanged: (Boolean) -> Unit,
+    onLoadMore: (Boolean) -> Unit,
     onItemClick: (Int) -> Unit
 ) {
     val listState = rememberLazyListState()
     val isLoading by remember { derivedStateOf { listState.isLastVisibleItem() } }
 
     LaunchedEffect(isLoading) {
-        onSearchRequestParamChanged(isLoading)
+        onLoadMore(isLoading)
     }
 
     LazyColumn(

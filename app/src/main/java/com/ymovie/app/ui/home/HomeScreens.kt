@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,7 +77,7 @@ private fun HomeContents(
     onItemClick: (Int) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.padding(bottom = 20.dp),
+        contentPadding = PaddingValues(bottom = 20.dp),
         verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {
         item {
@@ -181,7 +182,7 @@ private fun HomeHorizontalPager(
                 AsyncImage(
                     model = NetworkConstants.IMAGE_BASE_URL_W500 + movies[page].backdropPath,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
                 Column(
@@ -256,7 +257,7 @@ private fun HomeHorizontalList(
                 Card(
                     modifier = Modifier
                         .width(150.dp)
-                        .height(270.dp)
+                        .height(286.dp)
                         .clickable { onItemClick(movies[index].id) },
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
                 ) {
@@ -296,7 +297,7 @@ private fun HomeHorizontalList(
                         }
                         Text(
                             text = movies[index].originalTitle,
-                            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
                             color = Color.White,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,

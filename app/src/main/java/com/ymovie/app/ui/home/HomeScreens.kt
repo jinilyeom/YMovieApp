@@ -204,7 +204,7 @@ private fun HomeHorizontalPager(
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp, 19.dp),
+                            modifier = Modifier.size(20.dp, 20.dp),
                             tint = Color(0xFFFF97B7)
                         )
                         Text(
@@ -279,7 +279,7 @@ private fun HomeHorizontalList(
                                     Icon(
                                         imageVector = Icons.Default.Star,
                                         contentDescription = null,
-                                        modifier = Modifier.size(10.dp, 9.5.dp),
+                                        modifier = Modifier.size(10.dp, 10.dp),
                                         tint = Color(0xFFFF97B7)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))

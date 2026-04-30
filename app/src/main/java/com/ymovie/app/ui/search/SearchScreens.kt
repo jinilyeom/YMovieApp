@@ -1,16 +1,22 @@
 package com.ymovie.app.ui.search
 
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,7 +26,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,7 +42,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -57,16 +67,11 @@ fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
     val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
     val searchRequestParam by searchViewModel.searchRequestParam.collectAsStateWithLifecycle()
 
-    val modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp)
-
     SearchScreen(
         searchViewModel = searchViewModel,
         searchResultUiState = searchResultUiState,
         searchQuery = searchQuery,
         searchRequestParam = searchRequestParam,
-        modifier = modifier,
         onItemClick = onItemClick
     )
 }
@@ -77,12 +82,14 @@ private fun SearchScreen(
     searchResultUiState: SearchUiState,
     searchQuery: String,
     searchRequestParam: SearchRequestParam,
-    modifier: Modifier,
     onItemClick: (Int) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Column {
+    Column(
+        modifier = Modifier.fillMaxSize().background(Color(0xFF121212)).padding(horizontal = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(8.dp))
         SearchBar(
             searchQuery,
             onSearchQueryChanged = {
@@ -94,8 +101,7 @@ private fun SearchScreen(
                     SearchRequestParam(query = searchQuery, page = DEFAULT_PAGE)
                 )
                 keyboardController?.hide()
-            },
-            modifier
+            }
         )
         Spacer(modifier = Modifier.height(8.dp))
         when (searchResultUiState) {
@@ -103,7 +109,6 @@ private fun SearchScreen(
             is SearchUiState.Success -> {
                 SearchResultList(
                     searchResultUiState.data.movies ?: emptyList(),
-                    modifier,
                     onLoadMore = { isLoading ->
                         if (isLoading && searchResultUiState.data.page <= searchResultUiState.data.totalPage) {
                             searchViewModel.setSearchRequestParam(
@@ -125,13 +130,12 @@ private fun SearchScreen(
 private fun SearchBar(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    onSearchTriggered: () -> Unit,
-    modifier: Modifier
+    onSearchTriggered: () -> Unit
 ) {
     TextField(
         value = searchQuery,
         onValueChange = { onSearchQueryChanged(it) },
-        modifier = modifier,
+        modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(stringResource(id = R.string.hint_search)) },
         leadingIcon = {
             Icon(imageVector = Icons.Default.Search, contentDescription = null)
@@ -154,9 +158,18 @@ private fun SearchBar(
         maxLines = 1,
         shape = RoundedCornerShape(32.dp),
         colors = TextFieldDefaults.colors(
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
+            focusedContainerColor = Color(0xFF2B292D),
+            unfocusedContainerColor = Color(0xFF2B292D),
+            cursorColor = Color.White,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
+            disabledIndicatorColor = Color.Transparent,
+            focusedLeadingIconColor = Color.White,
+            unfocusedLeadingIconColor = Color.White,
+            focusedTrailingIconColor = Color.White,
+            unfocusedTrailingIconColor = Color.White
         )
     )
 }
@@ -164,7 +177,6 @@ private fun SearchBar(
 @Composable
 private fun SearchResultList(
     searchResultMovies: List<Movie>,
-    modifier: Modifier,
     onLoadMore: (Boolean) -> Unit,
     onItemClick: (Int) -> Unit
 ) {
@@ -181,35 +193,62 @@ private fun SearchResultList(
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         items(searchResultMovies.size) { index ->
-            SearchResultListItem(searchResultMovies[index], modifier, onItemClick)
+            SearchResultListItem(searchResultMovies[index], onItemClick)
         }
     }
 }
 
 @Composable
-private fun SearchResultListItem(movie: Movie, modifier: Modifier, onItemClick: (Int) -> Unit) {
-    Card(modifier = modifier.clickable { onItemClick(movie.id) }) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            AsyncImage(
-                model = NetworkConstants.IMAGE_BASE_URL_W200 + movie.posterPath,
-                contentDescription = null,
-                modifier = Modifier.size(100.dp, 147.dp)
-            )
-            Column(modifier = modifier) {
+private fun SearchResultListItem(movie: Movie, onItemClick: (Int) -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth().height(147.dp).clickable { onItemClick(movie.id) },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+    ) {
+        Row {
+            Box(
+                modifier = Modifier.background(Color(0xFF353438)).width(100.dp).fillMaxHeight()
+            ) {
+                if (movie.posterPath.isNullOrEmpty()) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_broken_image_24px),
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp).align(Alignment.Center),
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
+                } else {
+                    AsyncImage(
+                        model = NetworkConstants.IMAGE_BASE_URL_W200 + movie.posterPath,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalArrangement = Arrangement.Center
+            ) {
                 Text(
                     text = movie.originalTitle,
+                    color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
-                Text(text = movie.releaseDate, fontSize = 14.sp)
-                Text(
-                    text = stringResource(
-                        id = R.string.label_number_with_percent, (movie.voteAverage * 10).toInt()
-                    ),
-                    fontSize = 14.sp
-                )
+                Text(text = movie.releaseDate, color = Color.White, fontSize = 14.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp, 14.dp),
+                        tint = Color(0xFFFF97B7)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.label_number_with_percent, (movie.voteAverage * 10).toInt()),
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }

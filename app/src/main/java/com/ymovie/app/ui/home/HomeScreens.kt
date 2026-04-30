@@ -205,9 +205,10 @@ private fun HomeHorizontalPager(
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp, 20.dp),
+                            modifier = Modifier.size(16.dp, 16.dp),
                             tint = Color(0xFFFF97B7)
                         )
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = stringResource(
                                 id = R.string.label_number_with_percent, (movies[page].voteAverage * 10).toInt()
@@ -280,7 +281,7 @@ private fun HomeHorizontalList(
                                     Icon(
                                         imageVector = Icons.Default.Star,
                                         contentDescription = null,
-                                        modifier = Modifier.size(10.dp, 10.dp),
+                                        modifier = Modifier.size(12.dp, 12.dp),
                                         tint = Color(0xFFFF97B7)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))

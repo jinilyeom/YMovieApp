@@ -223,7 +223,7 @@ private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit) {
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp, 20.dp),
+                            modifier = Modifier.size(16.dp, 16.dp),
                             tint = Color(0xFFFF97B7)
                         )
                         Spacer(modifier = Modifier.width(4.dp))

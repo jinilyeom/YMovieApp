@@ -1,6 +1,7 @@
 package com.ymovie.app.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -177,14 +180,23 @@ private fun HomeHorizontalPager(
             modifier = Modifier.clickable { onItemClick(movies[page].id) }
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().height(230.dp)
+                modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(230.dp)
             ) {
-                AsyncImage(
-                    model = NetworkConstants.IMAGE_BASE_URL_W500 + movies[page].backdropPath,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                if (movies[page].backdropPath.isNullOrEmpty()) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_broken_image_24px),
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp).align(Alignment.Center),
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
+                } else {
+                    AsyncImage(
+                        model = NetworkConstants.IMAGE_BASE_URL_W500 + movies[page].backdropPath,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.1f), Color.Black.copy(alpha = 0.6f))))
@@ -263,12 +275,21 @@ private fun HomeHorizontalList(
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
                 ) {
                     Column {
-                        Box {
-                            AsyncImage(
-                                model = NetworkConstants.IMAGE_BASE_URL_W200 + movies[index].posterPath,
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxWidth().height(225.dp)
-                            )
+                        Box(modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(225.dp)) {
+                            if (movies[index].posterPath.isNullOrEmpty()) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_broken_image_24px),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(48.dp).align(Alignment.Center),
+                                    colorFilter = ColorFilter.tint(Color.White)
+                                )
+                            } else {
+                                AsyncImage(
+                                    model = NetworkConstants.IMAGE_BASE_URL_W200 + movies[index].posterPath,
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
                             Box(
                                 modifier = Modifier.align(Alignment.BottomEnd).padding(2.dp)
                             ) {

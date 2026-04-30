@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,8 +40,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -176,14 +178,22 @@ private fun MovieDetailContents(
 private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit) {
     Column {
         Box(
-            modifier = Modifier.fillMaxWidth().height(expandedTopBarHeight)
+            modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(expandedTopBarHeight)
         ) {
-            AsyncImage(
-                model = NetworkConstants.IMAGE_BASE_URL_W500 + data.posterPath,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillWidth
-            )
+            if (data.posterPath.isNullOrEmpty()) {
+                Image(
+                    painter = painterResource(R.drawable.ic_broken_image_24px),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp).align(Alignment.Center),
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+            } else {
+                AsyncImage(
+                    model = NetworkConstants.IMAGE_BASE_URL_W500 + data.posterPath,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
             Box(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
                 IconButton(
                     onClick = { onBackClick() },
@@ -297,12 +307,22 @@ private fun MovieDetailCredits(casts: List<Cast>, crews: List<Crew>) {
                     modifier = Modifier.size(160.dp, 320.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
                 ) {
-                    AsyncImage(
-                        model = NetworkConstants.IMAGE_BASE_URL_W200 + casts[index].profilePath,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(240.dp),
-                        contentScale = ContentScale.FillWidth
-                    )
+                    Box(modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(240.dp)) {
+                        if (casts[index].profilePath.isNullOrEmpty()) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_broken_image_24px),
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp).align(Alignment.Center),
+                                colorFilter = ColorFilter.tint(Color.White)
+                            )
+                        } else {
+                            AsyncImage(
+                                model = NetworkConstants.IMAGE_BASE_URL_W200 + casts[index].profilePath,
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                    }
                     Column(modifier = Modifier.padding(8.dp)) {
                         Text(
                             text = casts[index].name,

@@ -210,7 +210,7 @@ private fun SearchResultListItem(movie: Movie, onItemClick: (Int) -> Unit) {
             ) {
                 if (movie.posterPath.isNullOrEmpty()) {
                     Image(
-                        painter = painterResource(R.drawable.ic_broken_image_24px),
+                        painter = painterResource(R.drawable.ic_broken_image_24),
                         contentDescription = null,
                         modifier = Modifier.size(48.dp).align(Alignment.Center),
                         colorFilter = ColorFilter.tint(Color.White)

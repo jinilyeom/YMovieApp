@@ -194,7 +194,7 @@ private fun HomeHorizontalPager(
             ) {
                 if (movies[page].backdropPath.isNullOrEmpty()) {
                     Image(
-                        painter = painterResource(R.drawable.ic_broken_image_24px),
+                        painter = painterResource(R.drawable.ic_broken_image_24),
                         contentDescription = null,
                         modifier = Modifier.size(48.dp).align(Alignment.Center),
                         colorFilter = ColorFilter.tint(Color.White)
@@ -288,7 +288,7 @@ private fun HomeHorizontalList(
                         Box(modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(225.dp)) {
                             if (movies[index].posterPath.isNullOrEmpty()) {
                                 Image(
-                                    painter = painterResource(R.drawable.ic_broken_image_24px),
+                                    painter = painterResource(R.drawable.ic_broken_image_24),
                                     contentDescription = null,
                                     modifier = Modifier.size(48.dp).align(Alignment.Center),
                                     colorFilter = ColorFilter.tint(Color.White)

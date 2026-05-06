@@ -154,15 +154,25 @@ private fun HomeAppBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.9f), Color.Black.copy(alpha = 0.9f))))
+            .background(Color.Black.copy(alpha = 0.9f))
     ) {
-        Text(
-            text = stringResource(id = R.string.app_name),
-            modifier = Modifier.align(Alignment.Center),
-            color = Color.White,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        Row(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_launcher_44),
+                contentDescription = null,
+                tint = Color(0xFF9564F7)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = stringResource(id = R.string.app_name),
+                color = Color(0xFF9564F7),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 

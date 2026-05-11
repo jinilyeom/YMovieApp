@@ -50,11 +50,11 @@ class MovieRepository(private val movieRemoteDataSource: MovieRemoteDataSource) 
         )
     }
 
-    suspend fun fetchMovieDetails(movieId: Int): Flow<MovieDetail> {
-        return movieRemoteDataSource.fetchMovieDetails(movieId)
+    suspend fun fetchMovieDetails(movieId: Int, language: String): Flow<MovieDetail> {
+        return movieRemoteDataSource.fetchMovieDetails(movieId, language)
     }
 
-    suspend fun fetchCredits(movieId: Int): Flow<Credit> {
-        return movieRemoteDataSource.fetchCredits(movieId)
+    suspend fun fetchCredits(movieId: Int, language: String): Flow<Credit> {
+        return movieRemoteDataSource.fetchCredits(movieId, language)
     }
 }

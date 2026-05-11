@@ -48,8 +48,14 @@ interface MovieService {
     ): MovieList
 
     @GET("movie/{movie_id}")
-    suspend fun fetchMovieDetails(@Path("movie_id") movieId: Int): MovieDetail
+    suspend fun fetchMovieDetails(
+        @Path("movie_id") movieId: Int,
+        @Query("language") language: String
+    ): MovieDetail
 
     @GET("movie/{movie_id}/credits")
-    suspend fun fetchCredits(@Path("movie_id") movieId: Int): Credit
+    suspend fun fetchCredits(
+        @Path("movie_id") movieId: Int,
+        @Query("language") language: String
+    ): Credit
 }

@@ -19,6 +19,6 @@ interface MovieDataSource {
         region: String,
         year: String
     ): Flow<MovieList>
-    suspend fun fetchMovieDetails(movieId: Int): Flow<MovieDetail>
-    suspend fun fetchCredits(movieId: Int): Flow<Credit>
+    suspend fun fetchMovieDetails(movieId: Int, language: String): Flow<MovieDetail>
+    suspend fun fetchCredits(movieId: Int, language: String): Flow<Credit>
 }

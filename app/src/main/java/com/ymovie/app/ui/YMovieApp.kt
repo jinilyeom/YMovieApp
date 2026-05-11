@@ -8,14 +8,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ymovie.app.R
 
+private const val APP_LANGUAGE = "ko-KR"
+
 @Composable
 fun YMovieApp() {
+    val appState = remember { MovieryAppState(APP_LANGUAGE) }
     val navController = rememberNavController()
     val navRoutes = listOf(NavigationRoute.Home, NavigationRoute.Search)
 
@@ -52,7 +56,7 @@ fun YMovieApp() {
             }
         }
     ) { innerPadding ->
-        YMovieNavHost(navController, navRoutes, innerPadding)
+        YMovieNavHost(appState, navController, navRoutes, innerPadding)
     }
 }
 

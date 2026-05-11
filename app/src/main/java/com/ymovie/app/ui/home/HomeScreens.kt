@@ -215,7 +215,7 @@ private fun HomeHorizontalPager(
                         .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 20.dp)
                 ) {
                     Text(
-                        text = movies[page].originalTitle,
+                        text = movies[page].title,
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
@@ -328,7 +328,7 @@ private fun HomeHorizontalList(
                             }
                         }
                         Text(
-                            text = movies[index].originalTitle,
+                            text = movies[index].title,
                             modifier = Modifier.fillMaxWidth().padding(8.dp),
                             color = Color.White,
                             fontSize = 14.sp,

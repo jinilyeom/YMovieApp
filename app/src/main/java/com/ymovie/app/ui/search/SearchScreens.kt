@@ -227,7 +227,7 @@ private fun SearchResultListItem(movie: Movie, onItemClick: (Int) -> Unit) {
                 modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = movie.originalTitle,
+                    text = movie.title,
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,

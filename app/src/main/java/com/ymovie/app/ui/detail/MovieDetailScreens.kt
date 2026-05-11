@@ -130,7 +130,7 @@ private fun MovieDetailCollapsedAppBar(
                 is MovieDetailUiState.Loading -> {}
                 is MovieDetailUiState.Success -> {
                     Text(
-                        text = movieDetailUiState.data.originalTitle,
+                        text = movieDetailUiState.data.title,
                         modifier = Modifier.align(Alignment.Center),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
@@ -214,7 +214,7 @@ private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit) {
                     .align(Alignment.BottomStart)
             ) {
                 Text(
-                    text = data.originalTitle,
+                    text = data.title,
                     modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                     color = Color.White,
                     fontSize = 22.sp,

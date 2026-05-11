@@ -1,0 +1,60 @@
+package com.moviery.android.data
+
+import com.moviery.android.data.model.movie.Credit
+import com.moviery.android.data.model.movie.MovieDetail
+import com.moviery.android.data.model.movie.MovieList
+import com.moviery.android.data.source.MovieRemoteDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
+class MovieRepository(private val movieRemoteDataSource: MovieRemoteDataSource) {
+    suspend fun fetchNowPlayingMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return movieRemoteDataSource.fetchNowPlayingMovies(language, page, region).map {
+            it.header = ""
+            it
+        }
+    }
+
+    suspend fun fetchPopularMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return movieRemoteDataSource.fetchPopularMovies(language, page, region).map {
+            it.header = "Popular"
+            it
+        }
+    }
+
+    suspend fun fetchTopRatedMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return movieRemoteDataSource.fetchTopRatedMovies(language, page, region).map {
+            it.header = "Top Rated"
+            it
+        }
+    }
+
+    suspend fun fetchUpcomingMovies(language: String, page: Int, region: String): Flow<MovieList> {
+        return movieRemoteDataSource.fetchUpcomingMovies(language, page, region).map {
+            it.header = "Upcoming"
+            it
+        }
+    }
+
+    suspend fun searchMovie(
+        query: String,
+        includeAdult: Boolean,
+        language: String,
+        primaryReleaseYear: String,
+        page: Int,
+        region: String,
+        year: String
+    ): Flow<MovieList> {
+        return movieRemoteDataSource.searchMovie(
+            query, includeAdult, language, primaryReleaseYear, page, region, year
+        )
+    }
+
+    suspend fun fetchMovieDetails(movieId: Int, language: String): Flow<MovieDetail> {
+        return movieRemoteDataSource.fetchMovieDetails(movieId, language)
+    }
+
+    suspend fun fetchCredits(movieId: Int, language: String): Flow<Credit> {
+        return movieRemoteDataSource.fetchCredits(movieId, language)
+    }
+}

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.model.SearchRequestParam
+import com.ymovie.app.data.model.SearchReqParam
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.data.model.movie.MovieList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,15 +17,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var _searchRequestParam = MutableStateFlow(SearchRequestParam())
-    val searchRequestParam: StateFlow<SearchRequestParam> = _searchRequestParam.asStateFlow()
+    private var _searchReqParam = MutableStateFlow(SearchReqParam())
+    val searchReqParam: StateFlow<SearchReqParam> = _searchReqParam.asStateFlow()
 
     private var _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     private val movies: MutableList<Movie> = mutableListOf()
 
-    val searchUiState: StateFlow<SearchUiState> = searchRequestParam.flatMapLatest { param ->
+    val searchUiState: StateFlow<SearchUiState> = searchReqParam.flatMapLatest { param ->
         movieRepository.searchMovie(
             param.query,
             param.includeAdult,
@@ -52,8 +52,8 @@ class SearchViewModel(private val movieRepository: MovieRepository) : ViewModel(
         initialValue = SearchUiState.Loading
     )
 
-    fun setSearchRequestParam(param: SearchRequestParam) {
-        _searchRequestParam.value = param
+    fun setSearchReqParam(param: SearchReqParam) {
+        _searchReqParam.value = param
     }
 
     fun setSearchQuery(query: String) {

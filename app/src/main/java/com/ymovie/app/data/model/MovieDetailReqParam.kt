@@ -1,6 +1,6 @@
 package com.ymovie.app.data.model
 
-data class MovieDetailRequestParam(
+data class MovieDetailReqParam(
     var movieId: Int = -1,
     var language: String = ""
 )

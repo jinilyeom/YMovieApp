@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.model.MovieDetailRequestParam
+import com.ymovie.app.data.model.MovieDetailReqParam
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class MovieDetailViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var movieDetailRequestParam = MutableStateFlow(MovieDetailRequestParam())
+    private var movieDetailReqParam = MutableStateFlow(MovieDetailReqParam())
 
-    val movieDetail: StateFlow<MovieDetailUiState> = movieDetailRequestParam.flatMapLatest { param ->
+    val movieDetail: StateFlow<MovieDetailUiState> = movieDetailReqParam.flatMapLatest { param ->
         movieRepository.fetchMovieDetails(param.movieId, param.language)
             .catch { e ->
                 MovieDetailUiState.Failure(Exception(e))
@@ -30,7 +30,7 @@ class MovieDetailViewModel(private val movieRepository: MovieRepository) : ViewM
         initialValue = MovieDetailUiState.Loading
     )
 
-    val movieCredit: StateFlow<MovieCreditUiState> = movieDetailRequestParam.flatMapLatest { param ->
+    val movieCredit: StateFlow<MovieCreditUiState> = movieDetailReqParam.flatMapLatest { param ->
         movieRepository.fetchCredits(param.movieId, param.language)
             .catch { e ->
                 MovieCreditUiState.Failure(Exception(e))
@@ -44,8 +44,8 @@ class MovieDetailViewModel(private val movieRepository: MovieRepository) : ViewM
         initialValue = MovieCreditUiState.Loading
     )
 
-    fun setMovieDetailRequestParam(param: MovieDetailRequestParam) {
-        movieDetailRequestParam.value = param
+    fun setMovieDetailReqParam(param: MovieDetailReqParam) {
+        movieDetailReqParam.value = param
     }
 }
 

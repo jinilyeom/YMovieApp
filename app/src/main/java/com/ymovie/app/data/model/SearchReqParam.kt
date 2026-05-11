@@ -1,6 +1,6 @@
 package com.ymovie.app.data.model
 
-data class SearchRequestParam(
+data class SearchReqParam(
     var query: String = "",
     var includeAdult: Boolean = false,
     var language: String = "",

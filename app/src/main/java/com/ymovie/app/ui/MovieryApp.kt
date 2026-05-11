@@ -18,7 +18,7 @@ import com.ymovie.app.R
 private const val APP_LANGUAGE = "ko-KR"
 
 @Composable
-fun YMovieApp() {
+fun MovieryApp() {
     val appState = remember { MovieryAppState(APP_LANGUAGE) }
     val navController = rememberNavController()
     val navRoutes = listOf(NavigationRoute.Home, NavigationRoute.Search)
@@ -56,7 +56,7 @@ fun YMovieApp() {
             }
         }
     ) { innerPadding ->
-        YMovieNavHost(appState, navController, navRoutes, innerPadding)
+        MovieryNavHost(appState, navController, navRoutes, innerPadding)
     }
 }
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.model.HomeRequestParam
+import com.ymovie.app.data.model.HomeReqParam
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
-    private var homeRequestParam = MutableStateFlow(HomeRequestParam())
+    private var homeReqParam = MutableStateFlow(HomeReqParam())
 
-    val nowPlayingMoviesUiState: StateFlow<HomeUiState> = homeRequestParam.flatMapLatest { param ->
+    val nowPlayingMoviesUiState: StateFlow<HomeUiState> = homeReqParam.flatMapLatest { param ->
         movieRepository.fetchNowPlayingMovies(param.language, param.page, param.region)
             .catch { e ->
                 HomeUiState.Failure(Exception(e))
@@ -30,7 +30,7 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         initialValue = HomeUiState.Loading
     )
 
-    val popularMoviesUiState: StateFlow<HomeUiState> = homeRequestParam.flatMapLatest { param ->
+    val popularMoviesUiState: StateFlow<HomeUiState> = homeReqParam.flatMapLatest { param ->
         movieRepository.fetchPopularMovies(param.language, param.page, param.region)
             .catch { e ->
                 HomeUiState.Failure(Exception(e))
@@ -44,7 +44,7 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         initialValue = HomeUiState.Loading
     )
 
-    val topRatedMoviesUiState: StateFlow<HomeUiState> = homeRequestParam.flatMapLatest { param ->
+    val topRatedMoviesUiState: StateFlow<HomeUiState> = homeReqParam.flatMapLatest { param ->
         movieRepository.fetchTopRatedMovies(param.language, param.page, param.region)
             .catch { e ->
                 HomeUiState.Failure(Exception(e))
@@ -58,7 +58,7 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         initialValue = HomeUiState.Loading
     )
 
-    val upcomingMoviesUiState: StateFlow<HomeUiState> = homeRequestParam.flatMapLatest { param ->
+    val upcomingMoviesUiState: StateFlow<HomeUiState> = homeReqParam.flatMapLatest { param ->
         movieRepository.fetchUpcomingMovies(param.language, param.page, param.region)
             .catch { e ->
                 HomeUiState.Failure(Exception(e))
@@ -72,8 +72,8 @@ class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() 
         initialValue = HomeUiState.Loading
     )
 
-    fun setHomeRequestParam(param: HomeRequestParam) {
-        homeRequestParam.value = param
+    fun setHomeReqParam(param: HomeReqParam) {
+        homeReqParam.value = param
     }
 }
 

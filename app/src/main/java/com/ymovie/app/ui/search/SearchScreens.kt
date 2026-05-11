@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.ymovie.app.R
-import com.ymovie.app.data.model.SearchRequestParam
+import com.ymovie.app.data.model.SearchReqParam
 import com.ymovie.app.data.model.movie.Movie
 import com.ymovie.app.network.NetworkConstants
 
@@ -65,13 +65,13 @@ private const val DEFAULT_PAGE = 1
 fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
     val searchResultUiState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
     val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
-    val searchRequestParam by searchViewModel.searchRequestParam.collectAsStateWithLifecycle()
+    val searchRequestParam by searchViewModel.searchReqParam.collectAsStateWithLifecycle()
 
     SearchScreen(
         searchViewModel = searchViewModel,
         searchResultUiState = searchResultUiState,
         searchQuery = searchQuery,
-        searchRequestParam = searchRequestParam,
+        searchReqParam = searchRequestParam,
         onItemClick = onItemClick
     )
 }
@@ -81,7 +81,7 @@ private fun SearchScreen(
     searchViewModel: SearchViewModel,
     searchResultUiState: SearchUiState,
     searchQuery: String,
-    searchRequestParam: SearchRequestParam,
+    searchReqParam: SearchReqParam,
     onItemClick: (Int) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -97,8 +97,8 @@ private fun SearchScreen(
             },
             onSearchTriggered = {
                 searchViewModel.clearMovies()
-                searchViewModel.setSearchRequestParam(
-                    SearchRequestParam(query = searchQuery, page = DEFAULT_PAGE)
+                searchViewModel.setSearchReqParam(
+                    SearchReqParam(query = searchQuery, page = DEFAULT_PAGE)
                 )
                 keyboardController?.hide()
             }
@@ -111,8 +111,8 @@ private fun SearchScreen(
                     searchResultUiState.data.movies ?: emptyList(),
                     onLoadMore = { isLoading ->
                         if (isLoading && searchResultUiState.data.page <= searchResultUiState.data.totalPage) {
-                            searchViewModel.setSearchRequestParam(
-                                SearchRequestParam(query = searchRequestParam.query, page = searchResultUiState.data.page + 1)
+                            searchViewModel.setSearchReqParam(
+                                SearchReqParam(query = searchReqParam.query, page = searchResultUiState.data.page + 1)
                             )
                         }
                     },

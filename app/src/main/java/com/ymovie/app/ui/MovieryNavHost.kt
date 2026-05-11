@@ -10,8 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.ymovie.app.data.MovieRepository
-import com.ymovie.app.data.model.HomeRequestParam
-import com.ymovie.app.data.model.MovieDetailRequestParam
+import com.ymovie.app.data.model.HomeReqParam
+import com.ymovie.app.data.model.MovieDetailReqParam
 import com.ymovie.app.data.source.MovieRemoteDataSource
 import com.ymovie.app.network.RetrofitApiClient
 import com.ymovie.app.network.service.MovieService
@@ -27,7 +27,7 @@ import com.ymovie.app.ui.search.SearchViewModel
 import com.ymovie.app.ui.search.SearchViewModelFactory
 
 @Composable
-fun YMovieNavHost(
+fun MovieryNavHost(
     appState: MovieryAppState,
     navController: NavHostController,
     navRoutes: List<NavigationRoute>,
@@ -43,7 +43,7 @@ fun YMovieNavHost(
                 MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
             )
             val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
-            homeViewModel.setHomeRequestParam(HomeRequestParam(appState.appLanguage))
+            homeViewModel.setHomeReqParam(HomeReqParam(appState.appLanguage))
 
             HomeScreen(
                 homeViewModel,
@@ -75,7 +75,7 @@ fun YMovieNavHost(
                 MovieRemoteDataSource(RetrofitApiClient.retrofitInstance.create(MovieService::class.java))
             )
             val movieDetailViewModel: MovieDetailViewModel = viewModel(factory = MovieDetailViewModelFactory(repository))
-            movieDetailViewModel.setMovieDetailRequestParam(MovieDetailRequestParam(movieDetailNavigation.movieId, appState.appLanguage))
+            movieDetailViewModel.setMovieDetailReqParam(MovieDetailReqParam(movieDetailNavigation.movieId, appState.appLanguage))
 
             MovieDetailScreen(
                 movieDetailViewModel,

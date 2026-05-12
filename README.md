@@ -1,6 +1,6 @@
-# YMovie
+# Moviery
 
-**YMovie**는 TMDB API를 활용하여 영화 정보를 탐색할 수 있는 네이티브 안드로이드 애플리케이션입니다.
+**Moviery**는 TMDB API를 활용하여 영화 정보를 탐색할 수 있는 네이티브 안드로이드 애플리케이션입니다.
 최신 안드로이드 개발 트렌드인 **Modern Android Development (MAD)** 기술을 익히고 적용하는 것을 목표로 하였으며 **Kotlin**, **Jetpack Compose** 그리고 **안드로이드 공식 아키텍처**를 기반으로 개발되었습니다.
 
 ## 스크린샷

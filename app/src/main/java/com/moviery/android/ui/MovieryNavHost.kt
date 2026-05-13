@@ -61,6 +61,7 @@ fun MovieryNavHost(
             val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModelFactory(repository))
 
             SearchScreen(
+                appState,
                 searchViewModel,
                 onItemClick = { movieId ->
                     navController.navigate(MovieDetailNavigation(movieId)) {

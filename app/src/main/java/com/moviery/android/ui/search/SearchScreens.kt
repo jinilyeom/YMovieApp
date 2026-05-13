@@ -57,17 +57,21 @@ import com.moviery.android.R
 import com.moviery.android.data.model.SearchReqParam
 import com.moviery.android.data.model.movie.Movie
 import com.moviery.android.network.NetworkConstants
+import com.moviery.android.ui.MovieryAppState
 
 private const val TAG = "SearchScreen"
 private const val DEFAULT_PAGE = 1
 
 @Composable
-fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
+fun SearchScreen(
+    appState: MovieryAppState, searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit
+) {
     val searchResultUiState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
     val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
     val searchRequestParam by searchViewModel.searchReqParam.collectAsStateWithLifecycle()
 
     SearchScreen(
+        appState = appState,
         searchViewModel = searchViewModel,
         searchResultUiState = searchResultUiState,
         searchQuery = searchQuery,
@@ -78,6 +82,7 @@ fun SearchScreen(searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit) {
 
 @Composable
 private fun SearchScreen(
+    appState: MovieryAppState,
     searchViewModel: SearchViewModel,
     searchResultUiState: SearchUiState,
     searchQuery: String,
@@ -98,7 +103,11 @@ private fun SearchScreen(
             onSearchTriggered = {
                 searchViewModel.clearMovies()
                 searchViewModel.setSearchReqParam(
-                    SearchReqParam(query = searchQuery, page = DEFAULT_PAGE)
+                    SearchReqParam(
+                        query = searchQuery,
+                        language = appState.appLanguage,
+                        page = DEFAULT_PAGE
+                    )
                 )
                 keyboardController?.hide()
             }
@@ -112,7 +121,11 @@ private fun SearchScreen(
                     onLoadMore = { isLoading ->
                         if (isLoading && searchResultUiState.data.page <= searchResultUiState.data.totalPage) {
                             searchViewModel.setSearchReqParam(
-                                SearchReqParam(query = searchReqParam.query, page = searchResultUiState.data.page + 1)
+                                SearchReqParam(
+                                    query = searchReqParam.query,
+                                    language = appState.appLanguage,
+                                    page = searchResultUiState.data.page + 1
+                                )
                             )
                         }
                     },

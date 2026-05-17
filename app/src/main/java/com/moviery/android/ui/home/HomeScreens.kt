@@ -154,7 +154,7 @@ private fun HomeAppBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(Color.Black.copy(alpha = 0.9f))
+            .background(Color(0xFF121212).copy(alpha = 0.9f))
     ) {
         Row(
             modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -209,7 +209,13 @@ private fun HomeHorizontalPager(
                 }
                 Column(
                     modifier = Modifier
-                        .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.1f), Color.Black.copy(alpha = 0.6f))))
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color(0xFF121212).copy(alpha = 0.1f),
+                                    Color(0xFF121212).copy(alpha = 0.6f))
+                            )
+                        )
                         .fillMaxWidth()
                         .align(Alignment.BottomStart)
                         .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 20.dp)
@@ -285,7 +291,12 @@ private fun HomeHorizontalList(
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
                 ) {
                     Column {
-                        Box(modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(225.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .background(Color(0xFF353438))
+                                .fillMaxWidth()
+                                .height(225.dp)
+                        ) {
                             if (movies[index].posterPath.isNullOrEmpty()) {
                                 Image(
                                     painter = painterResource(R.drawable.ic_broken_image_24),
@@ -305,7 +316,10 @@ private fun HomeHorizontalList(
                             ) {
                                 Row(
                                     modifier = Modifier
-                                        .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(8.dp))
+                                        .background(
+                                            Color(0xFF121212).copy(alpha = 0.6f),
+                                            RoundedCornerShape(8.dp)
+                                        )
                                         .padding(start = 4.dp, end = 4.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {

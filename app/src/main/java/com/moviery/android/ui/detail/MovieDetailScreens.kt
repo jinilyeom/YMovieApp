@@ -100,7 +100,7 @@ private fun MovieDetailCollapsedAppBar(
     onBackClick: () -> Unit
 ) {
     val color: Color by animateColorAsState(
-        if (isCollapsed) Color.Black.copy(alpha = 0.6f) else Color.Transparent, label = ""
+        if (isCollapsed) Color(0xFF121212).copy(alpha = 0.6f) else Color.Transparent
     )
 
     AnimatedVisibility(
@@ -117,7 +117,9 @@ private fun MovieDetailCollapsedAppBar(
         ) {
             IconButton(
                 onClick = { onBackClick() },
-                modifier = Modifier.background(Color.Black.copy(alpha = 0.6f), CircleShape).align(Alignment.CenterStart)
+                modifier = Modifier
+                    .background(Color(0xFF121212).copy(alpha = 0.6f), CircleShape)
+                    .align(Alignment.CenterStart)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -197,7 +199,7 @@ private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit) {
             Box(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
                 IconButton(
                     onClick = { onBackClick() },
-                    modifier = Modifier.background(Color.Black.copy(alpha = 0.6f), CircleShape)
+                    modifier = Modifier.background(Color(0xFF121212).copy(alpha = 0.6f), CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -209,7 +211,14 @@ private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.1f), Color.Black.copy(alpha = 0.6f))))
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color(0xFF121212).copy(alpha = 0.1f),
+                                Color(0xFF121212).copy(alpha = 0.6f)
+                            )
+                        )
+                    )
                     .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 20.dp)
                     .align(Alignment.BottomStart)
             ) {
@@ -307,7 +316,12 @@ private fun MovieDetailCredits(casts: List<Cast>, crews: List<Crew>) {
                     modifier = Modifier.size(160.dp, 320.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
                 ) {
-                    Box(modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(240.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color(0xFF353438))
+                            .fillMaxWidth()
+                            .height(240.dp)
+                    ) {
                         if (casts[index].profilePath.isNullOrEmpty()) {
                             Image(
                                 painter = painterResource(R.drawable.ic_broken_image_24),

@@ -24,6 +24,7 @@ fun MovieryApp() {
     val navRoutes = listOf(NavigationRoute.Home, NavigationRoute.Search)
 
     Scaffold(
+        containerColor = Color(0xFF121212),
         bottomBar = {
             NavigationBar(containerColor = Color(0xFF121212)) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()

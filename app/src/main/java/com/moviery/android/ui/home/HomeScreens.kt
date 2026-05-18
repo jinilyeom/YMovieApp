@@ -52,14 +52,20 @@ private const val TAG = "HomeScreen"
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    innerPadding: PaddingValues
 ) {
     val nowPlayingMoviesUiState by homeViewModel.nowPlayingMoviesUiState.collectAsStateWithLifecycle()
     val popularMoviesUiState by homeViewModel.popularMoviesUiState.collectAsStateWithLifecycle()
     val topRatedMoviesUiState by homeViewModel.topRatedMoviesUiState.collectAsStateWithLifecycle()
     val upcomingMoviesUiState by homeViewModel.upcomingMoviesUiState.collectAsStateWithLifecycle()
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF121212))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF121212))
+            .padding(innerPadding)
+    ) {
         HomeContents(
             nowPlayingMoviesUiState,
             popularMoviesUiState,

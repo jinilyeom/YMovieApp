@@ -64,7 +64,10 @@ private const val DEFAULT_PAGE = 1
 
 @Composable
 fun SearchScreen(
-    appState: MovieryAppState, searchViewModel: SearchViewModel, onItemClick: (Int) -> Unit
+    appState: MovieryAppState,
+    searchViewModel: SearchViewModel,
+    onItemClick: (Int) -> Unit,
+    innerPadding: PaddingValues
 ) {
     val searchResultUiState by searchViewModel.searchUiState.collectAsStateWithLifecycle()
     val searchQuery by searchViewModel.searchQuery.collectAsStateWithLifecycle()
@@ -76,7 +79,8 @@ fun SearchScreen(
         searchResultUiState = searchResultUiState,
         searchQuery = searchQuery,
         searchReqParam = searchRequestParam,
-        onItemClick = onItemClick
+        onItemClick = onItemClick,
+        innerPadding = innerPadding
     )
 }
 
@@ -87,12 +91,21 @@ private fun SearchScreen(
     searchResultUiState: SearchUiState,
     searchQuery: String,
     searchReqParam: SearchReqParam,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    innerPadding: PaddingValues
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-        modifier = Modifier.fillMaxSize().background(Color(0xFF121212)).padding(horizontal = 16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF121212))
+            .padding(
+                start = 16.dp,
+                top = innerPadding.calculateTopPadding(),
+                end = 16.dp,
+                bottom = innerPadding.calculateBottomPadding()
+            )
     ) {
         Spacer(modifier = Modifier.height(8.dp))
         SearchBar(

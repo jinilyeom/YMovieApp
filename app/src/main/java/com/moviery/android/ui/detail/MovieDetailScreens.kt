@@ -61,18 +61,21 @@ private val collapsedTopBarHeight = 64.dp
 private val expandedTopBarHeight = 619.dp
 
 @Composable
-fun MovieDetailScreen(movieDetailViewModel: MovieDetailViewModel, onBackClick: () -> Unit) {
+fun MovieDetailScreen(
+    movieDetailViewModel: MovieDetailViewModel, onBackClick: () -> Unit, innerPadding: PaddingValues
+) {
     val movieDetailUiState by movieDetailViewModel.movieDetail.collectAsStateWithLifecycle()
     val movieCreditUiState by movieDetailViewModel.movieCredit.collectAsStateWithLifecycle()
 
-    MovieDetailScreen(movieDetailUiState, movieCreditUiState, onBackClick)
+    MovieDetailScreen(movieDetailUiState, movieCreditUiState, onBackClick, innerPadding)
 }
 
 @Composable
 private fun MovieDetailScreen(
     movieDetailUiState: MovieDetailUiState,
     movieCreditUiState: MovieCreditUiState,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    innerPadding: PaddingValues
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -87,9 +90,14 @@ private fun MovieDetailScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF121212))) {
-        MovieDetailContents(lazyListState, movieDetailUiState, movieCreditUiState, onBackClick)
-        MovieDetailCollapsedAppBar(movieDetailUiState, isCollapsed, onBackClick)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF121212))
+            .padding(bottom = innerPadding.calculateBottomPadding())
+    ) {
+        MovieDetailContents(lazyListState, movieDetailUiState, movieCreditUiState, onBackClick, innerPadding)
+        MovieDetailCollapsedAppBar(movieDetailUiState, isCollapsed, onBackClick, innerPadding)
     }
 }
 
@@ -97,7 +105,8 @@ private fun MovieDetailScreen(
 private fun MovieDetailCollapsedAppBar(
     movieDetailUiState: MovieDetailUiState,
     isCollapsed: Boolean,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    innerPadding: PaddingValues
 ) {
     val color: Color by animateColorAsState(
         if (isCollapsed) Color(0xFF121212).copy(alpha = 0.6f) else Color.Transparent
@@ -112,8 +121,8 @@ private fun MovieDetailCollapsedAppBar(
             modifier = Modifier
                 .background(color)
                 .fillMaxWidth()
-                .height(collapsedTopBarHeight)
-                .padding(horizontal = 16.dp)
+                .height(collapsedTopBarHeight + innerPadding.calculateTopPadding())
+                .padding(start = 16.dp, top = innerPadding.calculateTopPadding(), end = 16.dp)
         ) {
             IconButton(
                 onClick = { onBackClick() },
@@ -151,14 +160,15 @@ private fun MovieDetailContents(
     lazyListState: LazyListState,
     movieDetailUiState: MovieDetailUiState,
     movieCreditUiState: MovieCreditUiState,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    innerPadding: PaddingValues
 ) {
     LazyColumn(state = lazyListState) {
         item {
             when (movieDetailUiState) {
                 is MovieDetailUiState.Loading -> {}
                 is MovieDetailUiState.Success -> {
-                    MovieDetailBasics(movieDetailUiState.data, onBackClick)
+                    MovieDetailBasics(movieDetailUiState.data, onBackClick, innerPadding)
                 }
                 is MovieDetailUiState.Failure -> {}
             }
@@ -177,7 +187,7 @@ private fun MovieDetailContents(
 }
 
 @Composable
-private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit) {
+private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit, innerPadding: PaddingValues) {
     Column {
         Box(
             modifier = Modifier.background(Color(0xFF353438)).fillMaxWidth().height(expandedTopBarHeight)
@@ -196,7 +206,11 @@ private fun MovieDetailBasics(data: MovieDetail, onBackClick: () -> Unit) {
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            Box(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 12.dp, end = 16.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 12.dp + innerPadding.calculateTopPadding(), end = 16.dp)
+            ) {
                 IconButton(
                     onClick = { onBackClick() },
                     modifier = Modifier.background(Color(0xFF121212).copy(alpha = 0.6f), CircleShape)

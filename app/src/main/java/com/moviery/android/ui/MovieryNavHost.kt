@@ -1,9 +1,7 @@
 package com.moviery.android.ui
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -35,8 +33,7 @@ fun MovieryNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = navRoutes[0].route,
-        modifier = Modifier.padding(innerPadding)
+        startDestination = navRoutes[0].route
     ) {
         composable(route = navRoutes[0].route) {
             val repository = MovieRepository(
@@ -51,7 +48,8 @@ fun MovieryNavHost(
                     navController.navigate(MovieDetailNavigation(movieId)) {
                         launchSingleTop = true
                     }
-                }
+                },
+                innerPadding
             )
         }
         composable(route = navRoutes[1].route) {
@@ -67,7 +65,8 @@ fun MovieryNavHost(
                     navController.navigate(MovieDetailNavigation(movieId)) {
                         launchSingleTop = true
                     }
-                }
+                },
+                innerPadding
             )
         }
         composable<MovieDetailNavigation> { backStackEntry ->
@@ -82,7 +81,8 @@ fun MovieryNavHost(
                 movieDetailViewModel,
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
+                innerPadding
             )
         }
     }

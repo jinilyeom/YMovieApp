@@ -4,9 +4,6 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.22'
 }
 
-Properties properties = new Properties()
-properties.load(new FileInputStream(rootProject.file("apikeys.properties")))
-
 android {
     namespace 'com.moviery.android'
     compileSdk 34
@@ -17,6 +14,9 @@ android {
         targetSdk 34
         versionCode 1
         versionName "0.0.1"
+
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(rootProject.file("local.properties")))
 
         buildConfigField("String", "TMDB_ACCESS_TOKEN_AUTH", properties["TMDB_ACCESS_TOKEN_AUTH"])
 

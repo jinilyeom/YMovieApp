@@ -59,7 +59,7 @@ app
 이 앱은 TMDB API를 사용하므로 API 키 설정이 필요합니다.
 
 [TMDB](https://developer.themoviedb.org/docs)에 가입 후 API Access Token을 발급받습니다.
-프로젝트 최상위 경로에 `apikeys.properties` 파일을 생성하고 아래의 내용을 추가합니다.
+프로젝트 최상위 경로 `local.properties` 파일에 아래의 내용을 추가합니다.
 ```
 TMDB_ACCESS_TOKEN_AUTH = "Your API key"
 ```

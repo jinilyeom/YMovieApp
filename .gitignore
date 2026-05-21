@@ -4,7 +4,6 @@ build/
 
 # Local configuration file (SDK path, etc)
 local.properties
-apikeys.properties
 
 # Log/OS Files
 .DS_Store

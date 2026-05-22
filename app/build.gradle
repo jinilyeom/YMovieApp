@@ -8,6 +8,9 @@ android {
     namespace 'com.moviery.android'
     compileSdk 34
 
+    Properties localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
     defaultConfig {
         applicationId "com.moviery.android"
         minSdk 28
@@ -15,12 +18,18 @@ android {
         versionCode 1
         versionName "0.0.1"
 
-        Properties properties = new Properties()
-        properties.load(new FileInputStream(rootProject.file("local.properties")))
-
-        buildConfigField("String", "TMDB_ACCESS_TOKEN_AUTH", properties["TMDB_ACCESS_TOKEN_AUTH"])
+        buildConfigField("String", "TMDB_ACCESS_TOKEN_AUTH", localProperties['TMDB_ACCESS_TOKEN_AUTH'])
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(localProperties['storeFile'])
+            keyAlias localProperties['keyAlias']
+            storePassword localProperties['storePassword']
+            keyPassword localProperties['keyPassword']
+        }
     }
 
     buildTypes {
@@ -28,6 +37,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false

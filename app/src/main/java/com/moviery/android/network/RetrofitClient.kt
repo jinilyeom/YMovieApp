@@ -8,8 +8,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitApiClient {
-    private const val TAG = "RetrofitApiClient"
+object RetrofitClient {
+    private const val TAG = "RetrofitClient"
 
     private val _retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(NetworkConstants.BASE_URL)

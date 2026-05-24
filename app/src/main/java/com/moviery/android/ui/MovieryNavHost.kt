@@ -11,7 +11,7 @@ import com.moviery.android.data.MovieRepository
 import com.moviery.android.data.model.HomeReqParam
 import com.moviery.android.data.model.MovieDetailReqParam
 import com.moviery.android.data.source.MovieRemoteDataSource
-import com.moviery.android.network.RetrofitApiClient
+import com.moviery.android.network.RetrofitClient
 import com.moviery.android.network.service.MovieService
 import com.moviery.android.ui.detail.MovieDetailNavigation
 import com.moviery.android.ui.detail.MovieDetailScreen
@@ -37,7 +37,7 @@ fun MovieryNavHost(
     ) {
         composable(route = navRoutes[0].route) {
             val repository = MovieRepository(
-                MovieRemoteDataSource(RetrofitApiClient.instance.create(MovieService::class.java))
+                MovieRemoteDataSource(RetrofitClient.instance.create(MovieService::class.java))
             )
             val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
             homeViewModel.setHomeReqParam(HomeReqParam(appState.appLanguage))
@@ -54,7 +54,7 @@ fun MovieryNavHost(
         }
         composable(route = navRoutes[1].route) {
             val repository = MovieRepository(
-                MovieRemoteDataSource(RetrofitApiClient.instance.create(MovieService::class.java))
+                MovieRemoteDataSource(RetrofitClient.instance.create(MovieService::class.java))
             )
             val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModelFactory(repository))
 
@@ -72,7 +72,7 @@ fun MovieryNavHost(
         composable<MovieDetailNavigation> { backStackEntry ->
             val movieDetailNavigation: MovieDetailNavigation = backStackEntry.toRoute()
             val repository = MovieRepository(
-                MovieRemoteDataSource(RetrofitApiClient.instance.create(MovieService::class.java))
+                MovieRemoteDataSource(RetrofitClient.instance.create(MovieService::class.java))
             )
             val movieDetailViewModel: MovieDetailViewModel = viewModel(factory = MovieDetailViewModelFactory(repository))
             movieDetailViewModel.setMovieDetailReqParam(MovieDetailReqParam(movieDetailNavigation.movieId, appState.appLanguage))

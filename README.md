@@ -45,7 +45,7 @@ app
 │   └── MovieRepository.kt
 ├── network
 │   ├── service     # Retrofit Interface 정의
-│   └── RetrofitApiClient.kt
+│   └── RetrofitClient.kt
 ├── ui
 │   ├── detail      # 상세 화면 및 ViewModel
 │   ├── home        # 홈 화면 및 ViewModel

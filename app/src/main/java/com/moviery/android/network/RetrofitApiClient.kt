@@ -1,6 +1,7 @@
 package com.moviery.android.network
 
 import android.util.Log
+import com.moviery.android.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,7 +30,11 @@ object RetrofitApiClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor { log ->
             Log.d(TAG, log)
         }.apply {
-            val level = HttpLoggingInterceptor.Level.BODY
+            val level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
             setLevel(level)
         }
 

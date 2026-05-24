@@ -11,18 +11,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitApiClient {
     private const val TAG = "RetrofitApiClient"
 
-    private val retrofit: Retrofit = Retrofit.Builder()
+    private val _retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(NetworkConstants.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(buildOkHttpClient())
         .build()
-    val retrofitInstance get() = retrofit
+    val instance: Retrofit
+        get() = _retrofit
 
     private fun buildOkHttpClient(): OkHttpClient {
         val interceptor = Interceptor { chain ->
             val request = chain.request().newBuilder()
                 .addHeader("accept", "application/json")
-                .addHeader("Authorization", NetworkConstants.AUTHENTICATION_TYPE + NetworkConstants.TMDB_ACCESS_TOKEN_AUTH).build()
+                .addHeader("Authorization", NetworkConstants.AUTHENTICATION_TYPE + NetworkConstants.TMDB_ACCESS_TOKEN_AUTH)
+                .build()
 
             chain.proceed(request)
         }

@@ -314,7 +314,8 @@ private fun HomeHorizontalList(
                                 AsyncImage(
                                     model = NetworkConstants.IMAGE_BASE_URL_W200 + movies[index].posterPath,
                                     contentDescription = null,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
                                 )
                             }
                             Box(

@@ -11,15 +11,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.intl.Locale
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.moviery.android.R
 
-private const val APP_LANGUAGE = "ko-KR"
+private const val LANGUAGE_KR = "ko-KR"
+private const val LANGUAGE_US = "en-US"
 
 @Composable
 fun MovieryApp() {
-    val appState = remember { MovieryAppState(APP_LANGUAGE) }
+    val appState = remember {
+        val language = if (Locale.current.toLanguageTag() == LANGUAGE_KR) {
+            LANGUAGE_KR
+        } else {
+            LANGUAGE_US
+        }
+        MovieryAppState(language)
+    }
     val navController = rememberNavController()
     val navRoutes = listOf(NavigationRoute.Home, NavigationRoute.Search)
 

@@ -3,14 +3,17 @@
 **Moviery**는 TMDB API를 활용하여 영화 정보를 탐색할 수 있는 네이티브 안드로이드 애플리케이션입니다.
 최신 안드로이드 개발 트렌드인 **Modern Android Development (MAD)** 기술을 익히고 적용하는 것을 목표로 하였으며 **Kotlin**, **Jetpack Compose** 그리고 **안드로이드 공식 아키텍처**를 기반으로 개발되었습니다.
 
+## 다운로드
+<img src="docs/images/GetItOnGooglePlay_Badge_English.png" width=239 />
+
 ## 스크린샷
-| ![Home](docs/images/screenshot-1-home.png) | ![Detail](docs/images/screenshot-2-detail.png) | ![Search](docs/images/screenshot-3-search.png) |
-|:---:|:---:|:---:|
-| 홈 (Home) | 상세 (Detail) | 검색 (Search) |
+| ![Home](docs/images/screenshot_1_home.png) | ![Detail](docs/images/screenshot_2_detail.png) | ![Search](docs/images/screenshot_3_search.png) |
+|:------------------------------------------:|:----------------------------------------------:|:----------------------------------------------:|
+|                  홈 (Home)                  |                  상세 (Detail)                   |                  검색 (Search)                   |
 
 ## 주요 기능
 * **영화 목록 조회**: 현재 상영작, 인기작, 높은 평점작, 개봉 예정작 등 다양한 카테고리별 영화를 목록 형태로 제공합니다.
-* **영화 상세 정보**: 영화 포스터, 제목, 평점, 개요(Overview) 및 출연진(Cast) 정보를 확인할 수 있습니다.
+* **영화 상세 정보**: 영화 포스터, 제목, 평점, 개요 및 출연진 정보를 확인할 수 있습니다.
 * **영화 검색**: 키워드를 입력하여 원하는 영화를 검색할 수 있습니다.
 
 ## 기술 스택
@@ -20,12 +23,15 @@
 * **Network**: Retrofit2, OkHttp3, Gson
 * **Image Loading**: Coil
 * **Navigation**: Jetpack Navigation Compose
-* **Build System**: Gradle (Kotlin DSL)
+* **Build System**: Gradle
 
 ## 아키텍처
 이 프로젝트는 [안드로이드 공식 아키텍처](https://developer.android.com/topic/architecture)를 따릅니다.
 
-![](docs/images/mad-arch-overview.png)
+<p align="center">
+    <img src="docs/images/mad-arch-overview.png" width=575 />
+</p>
+
 이미지 출처: [안드로이드 공식 문서](https://developer.android.com/topic/architecture)
 
 **UI Layer**
